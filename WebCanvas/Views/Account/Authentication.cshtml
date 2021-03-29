@@ -1,0 +1,25 @@
+﻿@model PageModel
+<div class="account-container">
+    <h2 class="form-info">Аутентификация</h2>
+    <div class="form-container">
+        <form id="authForm" class="noField" asp-action="Authentication" asp-controller="Account">
+            <input type="hidden" asp-for="@Model.userRegisterModel.Login" value="@Model.user.Login" />
+            <input type="hidden" asp-for="@Model.userRegisterModel.Email" value="@Model.user.Email" />
+
+                <div class="flexCenter" style="margin: 30px 0">
+                    <label style="text-align:center;">
+                        <input style="width:100%" placeholder="Код подтверждения" type="number" asp-for="@Model.userRegisterModel.Code" />
+                        Вам на почту отправлен код подтверждения
+                    </label>
+                    <span asp-validation-for="@Model.userRegisterModel.Code" />
+                </div>
+
+            <input type="submit" class="btn blue" value="Подтвердить код" />
+
+            <div class="validation" asp-validation-summary="All"></div>
+        </form>
+    </div>
+    <a class="center" asp-action="LogIn">Вернуться ко входу</a>
+</div>
+
+<partial name="_ValidationScriptsPartial" />

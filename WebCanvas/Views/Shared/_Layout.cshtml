@@ -1,0 +1,174 @@
+﻿@model PageModel
+@{
+    Model.user = Context.Session.GetObject<UserModel>("userModel");
+    Model.Page = Model.db.Pages.Where(p => p.pageName == Model.Title).FirstOrDefault();
+}
+
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" type="image/x-icon" href="~/images/logo/logo2.png" />
+    <title>Canvas - @Model.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
+    <script src="~/lib/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/codemirror.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/codemirror.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/mode/htmlmixed/htmlmixed.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/mode/xml/xml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/mode/javascript/javascript.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/theme/icecoder.css">
+    <link rel="stylesheet" href="~/lib/style.css">
+    <link rel="stylesheet" href="~/lib/dark_theme.css">
+    <link rel="stylesheet" href="~/lib/account.css" />
+    <link rel="stylesheet" href="~/lib/comments.css" />
+    <script src="~/lib/wow.min.js"></script>
+    <script src="~/lib/js.js"></script>
+</head>
+
+<body onload="dataLoad()" class="page">
+    <header>
+        <div class="statusbar" id="statusbar">
+            <div class="btnMenu" id="btnMenu" onclick="btnMenu()">
+                <a style="color:black">
+                    <i class="material-icons" style="font-size: 2em;">
+                        menu
+                    </i>
+                </a>
+            </div>
+            <div class="logo" id="logo">
+                <a asp-controller="Home" asp-action="Index">
+                    <img src="~/images/logo/logo2.png" alt="" id="imgLogo">
+                    <h1 id="textLogo"><span style="color:#0060A5">C</span>anva<span style="color:#B61039">s</span></h1>
+                </a>
+            </div>
+            <div class="menuStatusbar">
+                <nav class="menuItem" id="menuItem1">
+                    <partial name="_NavigationTopLinksPartial" />
+                </nav>
+            </div>
+            <div class="settingsBox">
+                <div class="profile">
+                    @if (Model.user != null && @Model.user.Role.RoleType == RoleType.ADMIN) {
+                    <a id="usersBtn" class="profileNav" asp-controller="Account" asp-action="Users">
+                        <img class="avatar s35" src="/images/users.png" alt="Пользователи" />
+                        <div class="tooltip navTip tip-users"> </div>
+                    </a>
+                    }
+                    @if (Model.user == null) {
+                        <a class="profileNav" asp-controller="Account" asp-action="LogIn">
+                            <img class="avatar s35" src="/lib/userDoc/user.png" alt="Аватар" />
+                        </a>
+                    }
+                    else {
+                        <a id="userBtn" class="profileNav" asp-controller="Home" asp-action="Profile">
+                            <img class="avatar s35" src="@Model.user.AvaLoc" alt="asd" />
+                            <div class="tooltip navTip tip-user"> </div>
+                        </a>
+                    }
+                </div>
+                <div class="siteTheme" id="siteThemeBtn">
+                    <label onclick="changeTheme()" id="themeLabel" for="themeBtn"> </label>
+                    <input type="checkbox" name="theme" hidden="" id="themeBtn">
+                    <div class="tooltip tip-theme"> </div>
+                </div>
+            </div>
+            @if (Model.pageColor != Color.White) {
+                <div class="loading" style="background: rgb(@Model.pageColor.R,@Model.pageColor.G,@Model.pageColor.B); "></div>
+            }
+        </div>
+    </header>
+    <main>
+        <div class="btnUp" id="btnUp">
+            <a href="#main" style="color:black">
+                <i class="material-icons">
+                    expand_less
+                </i>
+            </a>
+        </div>
+        <div class="grid" id="main">
+            <div class="box menuBox" id="menu">
+                <nav class="menuItem" id="menuItem2">
+                    <div class="menuName" onclick="listClick(2, null)">
+                        <i class="material-icons" id="arrow-2">
+                            keyboard_arrow_up
+                        </i>
+                        МЕНЮ
+                    </div>
+                    <partial name="_NavigationTopLinksPartial" />
+                </nav>
+            </div>
+            <div class="box leftBox" id="leftBox">
+                <div class="pagePoint">
+                    @if (Model.Navigation?.pages != null) {
+                        <ol class="list-guide" id="list-guide-1">
+                            <div style="display: flex; align-items: center;" onclick="listClick(1, this)">
+                                <i class="material-icons" id="arrow-1">
+                                    keyboard_arrow_up
+                                </i>
+                                На этой странице
+                            </div>
+                            @foreach (Nav navigation in Model.Navigation.pages) {
+                                <partial name="_NavigationLeftPartial" model="navigation" />
+                            }
+                            @if (Model.isComments) {
+                                <li>
+                                    <a class="comment" href="#comments">Комментарии</a>
+                                </li>
+                            }
+                        </ol>
+                    }
+                </div>
+            </div>
+            <div class="box mainBox" id="mainBox">
+                @if (Model.isMainBoxNavigation) {
+                    <partial name="_NavigationOnPagePartial" model="Model" />
+                }
+                <div class="article-container">
+                    @RenderBody()
+                    @if (Model.isPageCounter) {
+                        <div class="pageCounter">
+                            <ol>
+                                <li><a title="Базовое использование" asp-controller="Pages" asp-action="usingCanvas">1</a></li>
+                                <li><a title="Рисование фигур" asp-controller="Pages" asp-action="figureDraw">2</a></li>
+                                <li><a title="Стили и цвета" asp-controller="Pages" asp-action="colorAndStyle">3</a></li>
+                                <li><a title="Атрибуты" asp-controller="Pages" asp-action="attributes">4</a></li>
+                                <li><a title="События" asp-controller="Pages" asp-action="events">5</a></li>
+                            </ol>
+                        </div>
+                    }
+                    @if (Model.isComments) {
+                        List<CommentModel> comments = Model.db.GetComments(Model.Page.ID_page);
+                        Model.comments = comments;
+                        <partial name="_CommentsPartial" model="Model" />
+                    }
+                </div>
+            </div>
+            <div class="box rightBox" id="rightBox">
+                <div class="eggCheck">
+                    <span>Профессор Крейг</span>
+                    <span class="material-icons" id="eggToggle">
+                        toggle_off
+                    </span>
+                </div>
+                <div class="eggBox" id="eggBox">
+                    <img id="egg" src="https://i.gifer.com/VgI.gif" alt="">
+                    <div class="tooltip tip-egg"></div> <!-- TOOLTIP EGG -->
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer id="footer">
+        <div class="social">
+            <a href="http://vk.com/mr.greenson" target="_blank"><img src="~/images/social/vk.png" alt=""></a>
+            <a href="http://instagram.com/pripa.doc" target="_blank"><img src="~/images/social/insta.png" alt=""></a>
+            <a href="http://t.me/CMETAHKA" target="_blank"><img src="~/images/social/telegram.png" alt=""></a>
+        </div>
+        <p>Copyright 2020.</p>
+    </footer>
+</body>
+
+</html>

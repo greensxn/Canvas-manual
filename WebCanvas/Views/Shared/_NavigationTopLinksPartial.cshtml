@@ -1,0 +1,52 @@
+﻿@model PageModel
+<a asp-controller="Pages" asp-action="usingCanvas">
+    <i class="material-icons" style="color:#3FBE00">
+        memory
+    </i>
+    <span>Базовое использование</span>
+</a>
+<a asp-controller="Pages" asp-action="figureDraw">
+    <i class="material-icons" style="color:#990055">
+        gesture
+    </i>
+    <span>Рисование фигур</span>
+</a>
+<a asp-controller="Pages" asp-action="colorAndStyle">
+    <i class="material-icons" style="color:#B61039">
+        color_lens
+    </i>
+    <span>Стили и цвета</span>
+</a>
+<a asp-controller="Pages" asp-action="attributes">
+    <i class="material-icons" style="color:#0088BE">
+        build
+    </i>
+    <span>Атрибуты</span>
+</a>
+<a asp-controller="Pages" asp-action="events">
+    <i class="material-icons" style="color:#FF8C3A">
+        flash_on
+    </i>
+    <span>События</span>
+</a>
+<a class="profileNavigation" asp-controller="Home" asp-action="Profile">
+    @if (Model.user == null) {
+        <img src="/lib/userDoc/user.png" class="avatar s18" alt="Avatar" />
+    }
+    else {
+        <img src="@Model.user.AvaLoc" class="avatar s18" alt="Avatar" />
+    }
+    <span>Профиль</span>
+</a>
+@if (Model.user != null && Model.user.Role.RoleType == RoleType.ADMIN) {
+    <a class="profileNavigation" asp-controller="Account" asp-action="Users">
+        <img class="avatar s18" src="/images/users.png" alt="Пользователи" />
+        <span>Пользователи</span>
+    </a>
+}
+<a onclick="changeTheme()" class="profileNavigation" href="#">
+    <span class="material-icons">
+        emoji_objects
+    </span>
+    <span>Сменить тему</span>
+</a>

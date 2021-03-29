@@ -1,0 +1,150 @@
+﻿@model PageModel
+
+<div class="box mainBox" id="mainBox">
+    <div class="article-container">
+        <img class="imgBack wow" src="~/images/backIndex.png" alt="Картинка канваса">
+        <article class="lastArticle">
+            <h1 id="tag">Тэг <code>&lt;canvas&gt;</code></h1>
+            <div class="content-container">
+                <p>
+                    Элемент <code>&lt;canvas&gt;</code>, добавленный в HTML5, предназначен для создания графики с помощью JavaScript. Например, его используют для рисования графиков, создания фотокомпозиций, анимаций и даже обработки и рендеринга видео в реальном времени.
+                    <br><br>
+                    «Canvas» в переводе с английского означает «холст».
+                    <br><br>
+                    Приложения от Mozilla поддерживают <code>&lt;canvas&gt;</code> начиная с Gecko 1.8 (т.е. с Firefox 1.5). Этот элемент первоначально был представлен Apple для OS X Dashboard и Safari. Internet Explorer поддерживает <code>&lt;canvas&gt;</code> начиная с 9 версии; для более ранних версий IE поддержку для <code>&lt;canvas&gt;</code> можно добавить с помощью скрипта из проекта Google's Explorer Canvas. Google Chrome и Opera 9 также поддерживают <code>&lt;canvas&gt;</code>.
+                    <br><br>
+                    Элемент <code>&lt;canvas&gt;</code> также используется технологией WebGL для отрисовки аппаратно-ускоренной 3D-графики на вебстраницах.
+                </p>
+                <div class="tabs">
+                    <nav>
+                        <ul>
+                            <li class="tabName tab1 active"><label for="tab1">Настольные</label></li>
+                            <li class="tabName tab2"><label for="tab2">Мобильные</label></li>
+                        </ul>
+                    </nav>
+                    <div class="tabInfo">
+                        <input checked id="tab1" type="radio" name="tab">
+                        <div class="tab tab1">
+                            <table class="table-devices">
+                                <tr style="color: #203B53">
+                                    <td>
+                                        <img src="~/images/chrome.png" alt="">
+                                        Chrome
+                                    </td>
+                                    <td>
+                                        <img src="~/images/opera.png" alt="">
+                                        Opera
+                                    </td>
+                                    <td>
+                                        <img src="~/images/firefox.png" alt="">
+                                        Firefox
+                                    </td>
+                                    <td>
+                                        <img src="~/images/safari.png" alt="">
+                                        Safari
+                                    </td>
+                                    <td>
+                                        <img src="~/images/edge.png" alt="">
+                                        Edge
+                                    </td>
+                                    <td>
+                                        <img src="~/images/explorer.png" alt="">
+                                        Internet Explorer
+                                    </td>
+                                </tr>
+                                <tr style="color: #3E182F">
+                                    <td>1.0+</td>
+                                    <td>9.6+</td>
+                                    <td>1.5+</td>
+                                    <td>2.0+</td>
+                                    <td>12.0+</td>
+                                    <td>9.0+</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <input id="tab2" type="radio" name="tab">
+                        <div class="tab tab2">
+                            <table class="table-devices">
+                                <tr style="color: #203B53">
+                                    <td>
+                                        <img src="~/images/android.png" alt="">
+                                        Android
+                                    </td>
+                                    <td>
+                                        <img src="~/images/safari.png" alt="">
+                                        Safari
+                                    </td>
+                                    <td>
+                                        <img src="~/images/firefox.png" alt="">
+                                        Firefox mobile
+                                    </td>
+                                    <td>
+                                        <img src="~/images/opera.png" alt="">
+                                        Opera mini
+                                    </td>
+                                </tr>
+                                <tr style="color: #3E182F">
+                                    <td>2.1+</td>
+                                    <td>3.1+</td>
+                                    <td>2.0+</td>
+                                    <td>9.0+</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="information">
+                <h3 id="description">
+                    Описание
+                </h3>
+                <div class="content-container">
+                    <p>
+                        Создает область, в которой при помощи JavaScript можно рисовать разные объекты, выводить изображения, трансформировать их и менять свойства. При помощи тега <code>&lt;canvas&gt;</code> можно создавать рисунки, анимацию, игры и др.
+                    </p>
+                </div>
+            </div>
+            <div class="information">
+                <h3 id="sintaxis">
+                    Синтаксис
+                </h3>
+                <div class="content-container">
+                    <div class="Coding noActive" id="Coding1" mode="text/html">
+                        <textarea name="code">
+ <canvas id="идентификатор">
+ </canvas></textarea>
+                        <div class="btnBox">
+                            <button>
+                                <span class="material-icons">
+                                    filter_none
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="information">
+                <h3 id="atributes">
+                    Атрибуты
+                </h3>
+                <div class="content-container">
+                    <dl>
+                        <dt><span class="sapid">height</span></dt>
+                        <dd>Задает высоту холста. По умолчанию 300 пикселов.</dd>
+                        <dt><span class="sapid">width</span></dt>
+                        <dd>Задает ширинуу холста. По умолчанию 150 пикселов.</dd>
+                    </dl>
+                    <p style="margin-top: 10px;">Также для этого тега доступны <a asp-controller="Pages" asp-action="attributes">универсальные атрибуты</a> и <a asp-controller="Pages" asp-action="events">события</a>.</p>
+                </div>
+            </div>
+            <div class="information">
+                <h3 id="closedTag">
+                    Закрывающий тег
+                </h3>
+                <div class="content-container">
+                    <p>Обязателен.</p>
+                </div>
+            </div>
+        </article>
+    </div>
+</div>

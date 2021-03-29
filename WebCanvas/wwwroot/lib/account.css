@@ -1,0 +1,530 @@
+﻿.account-container {
+    padding: 50px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    width: 40%;
+}
+
+    .form-container.table {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+.table-users {
+    border-collapse: collapse;
+    text-align: center;
+}
+
+    .table-users td,
+    .table-users th {
+        padding: 15px 10px;
+        word-break: normal;
+    }
+
+    .table-users tr:nth-child(odd) td,
+    .table-users tr:nth-child(odd) th {
+        background-color: #EDEDED;
+    }
+
+.btnBox_users {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    /*background-color: inherit !important;*/
+}
+
+    .btnBox_users > .btn {
+        margin: 10px;
+    }
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 0 25%;
+}
+
+    form.table {
+        padding: 0;
+    }
+
+    form.noField {
+        align-items: stretch;
+    }
+
+fieldset {
+    padding: 20px 50px;
+    border: none;
+    width: 100%;
+    border-left: 2px solid lightgray;
+    transition: .2s;
+}
+
+    fieldset:hover {
+        border-color: #0060A5;
+    }
+
+.form-info {
+    margin-top: 10px;
+    color: #0060A5;
+}
+
+.validation {
+    margin-top: 10px;
+    color: red;
+    list-style-type: none;
+}
+
+    .validation ul {
+        list-style: none;
+        text-align: center;
+    }
+
+.account-container h2 {
+    margin-bottom: 30px;
+}
+
+.btn {
+    border-width: 2px;
+    border-style: solid;
+    padding: 8px 30px;
+    border-radius: 8px;
+    border-color: black;
+    color: black;
+    text-decoration: none;
+    transition: .2s;
+    background-color: inherit;
+}
+
+    .btn:hover {
+        background-color: black;
+        border-color: black;
+    }
+
+    .btn.green {
+        border-color: #008000;
+        color: #008000;
+    }
+
+        .btn.green:hover {
+            background-color: #008000;
+            border-color: #008000;
+        }
+
+    .btn.blue {
+        border-color: #0060A5;
+        color: #0060A5;
+    }
+
+        .btn.blue:hover {
+            background-color: #0060A5;
+            border-color: #0060A5;
+        }
+
+    .btn.red {
+        border-color: firebrick;
+        color: firebrick;
+    }
+
+        .btn.red:hover {
+            background-color: firebrick;
+            border-color: firebrick;
+        }
+
+    .btn.orange {
+        border-color: darkorange;
+        color: darkorange;
+    }
+
+        .btn.orange:hover {
+            background-color: darkorange;
+            border-color: darkorange;
+        }
+
+    .btn:hover {
+        color: white;
+    }
+
+input:-webkit-autofill {
+    -webkit-text-fill-color: black !important;
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+    background-color: black;
+}
+
+input, select, option {
+    outline: none;
+    border: none;
+    text-align: center;
+    text-align-last: center;
+    transition: .2s;
+}
+
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    input[type="number"],
+    select {
+        margin: 10px 0;
+        padding: 10px 0;
+        border-bottom: 2px solid gray;
+        border-radius: 0;
+        width: 100%;
+    }
+
+        input[type="text"]:hover,
+        input[type="email"]:hover,
+        input[type="number"]:hover,
+        input[type="password"]:hover,
+        select:hover {
+            border-color: #0060A5;
+        }
+
+        input[type="text"]:not(:placeholder-shown),
+        input[type="password"]:not(:placeholder-shown),
+        input[type="number"]:not(:placeholder-shown),
+        select:not(:placeholder-shown) {
+            border-color: #0060A5;
+        }
+
+    input[type="submit"].btn {
+        margin-top: 30px;
+        border-radius: 8px;
+        padding: 10px 30px;
+        background-color: transparent;
+        transition: .2s;
+    }
+
+.btn.small {
+    margin: 0 !important;
+    padding: 3px 8px !important;
+}
+
+.center {
+    margin: 0 auto;
+    text-decoration: none;
+}
+
+    .center:hover {
+        text-decoration: underline;
+    }
+
+.flexCenter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+    .flexCenter.row {
+        flex-direction: row;
+    }
+
+.settingsBox {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    left: calc(100% - 180px);
+    transition: .2s;
+}
+
+.account * {
+    margin: 5px 0;
+}
+
+.accountForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profileImg {
+    width: 100%;
+}
+
+.accountInfo {
+    border-collapse: collapse;
+    width: 300px;
+}
+
+    .accountInfo td {
+        min-width: 100px;
+        padding: 10px 20px;
+    }
+
+    .accountInfo tr td:first-child {
+        font-weight: bold;
+        text-align: right;
+    }
+
+    .accountInfo tr td:last-child {
+        text-align: center;
+    }
+
+    .accountInfo input[type=text] {
+        width: 100%;
+    }
+
+.avatar {
+    margin: 0 5px;
+    border-bottom: 2px solid transparent;
+    transition: .2s;
+    border-radius: 100px;
+}
+
+    .avatar.s18 {
+        height: 18px;
+        width: 18px;
+    }
+
+    .avatar.s25 {
+        height: 25px;
+        width: 25px;
+    }
+
+    .avatar.s35 {
+        height: 35px;
+        width: 35px;
+    }
+
+    .avatar.s50 {
+        height: 50px;
+        width: 50px;
+    }
+
+    .avatar.s100 {
+        height: 100px;
+        width: 100px;
+    }
+
+input[type="file"] {
+    text-align-last: left;
+}
+
+
+/* Страница профиля */
+.profile {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+    .profile a {
+        display: flex;
+        flex-direction: column;
+    }
+
+.profileGrid {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 20px;
+}
+
+.profileBlock {
+}
+
+    .profileBlock #profilePhotoForm {
+        align-items: center;
+    }
+
+    .profileBlock section {
+        margin: 10px 0;
+    }
+
+        .profileBlock section:hover h2 {
+            border-color: #0060A5;
+        }
+
+    .profileBlock h2 {
+        color: gray;
+        margin-bottom: 20px;
+        border-top: 2px solid #F3F3F3;
+        transition: .2s;
+        width: 100%;
+    }
+
+    .profileBlock form {
+        padding: 0;
+    }
+
+        .profileBlock form div {
+            width: 50%;
+        }
+
+    .profileBlock .profileInfo {
+        display: flex;
+        flex-direction: column;
+        margin: 10px 0;
+    }
+
+        .profileBlock .profileInfo.row {
+            flex-direction: row;
+        }
+
+    .profileBlock dl {
+        width: 100%;
+    }
+
+    .profileBlock dt {
+        margin-left: 2%;
+    }
+
+    .profileBlock dd {
+        text-align: center;
+        border-left: 1px solid lightgray;
+        border-bottom: 1px solid lightgray;
+        margin-bottom: 30px;
+    }
+
+.profileNavigation {
+    display: none !important;
+}
+
+@media (max-width: 750px) {
+    .profileGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .userPhoto {
+        grid-row: 1/1;
+        grid-column: 1/1;
+    }
+
+    .userInfo {
+        grid-row: 2/2;
+        grid-column: 1/1;
+    }
+
+    .resetUserInfo {
+        grid-row: 3/3;
+        grid-column: 1/1;
+    }
+
+    .profileNavigation {
+        display: flex !important;
+    }
+}
+
+/* темная тема */
+.dark-theme .btn {
+    border-color: #3B3B3B;
+}
+
+    .dark-theme .btn:hover {
+        background-color: #3B3B3B;
+    }
+
+    .dark-theme .btn.blue {
+        border-color: #7DBBF1;
+        color: #7DBBF1;
+    }
+
+        .dark-theme .btn.blue:hover {
+            background-color: #7DBBF1;
+            border-color: #7DBBF1;
+            color: black;
+        }
+
+    .dark-theme .btn.green {
+        border-color: #3FBE00;
+        color: #3FBE00;
+    }
+
+        .dark-theme .btn.green:hover {
+            background-color: #3FBE00;
+            border-color: #3FBE00;
+            color: black;
+        }
+
+    .dark-theme .btn.orange {
+        border-color: darkorange;
+        color: darkorange;
+    }
+
+        .dark-theme .btn.orange:hover {
+            background-color: darkorange;
+            border-color: darkorange;
+            color: black;
+        }
+
+    .dark-theme .btn.red {
+        border-color: #B22325;
+        color: #B22325;
+    }
+
+        .dark-theme .btn.red:hover {
+            background-color: #B22325;
+            border-color: #B22325;
+            color: white;
+        }
+
+.dark-theme .form-info {
+    color: white;
+}
+
+.dark-theme fieldset:hover {
+    border-color: #7DBBF1;
+}
+
+.dark-theme legend {
+    color: white;
+}
+
+.dark-theme .userInfo dl {
+    color: white;
+}
+
+.dark-theme .profileBlock section h2 {
+    border-color: #3B3B3B;
+}
+
+.dark-theme input[type="text"],
+.dark-theme input[type="password"],
+.dark-theme input[type="email"],
+.dark-theme input[type="number"],
+.dark-theme select {
+    background-color: #3B3B3B;
+    color: white;
+}
+
+.dark-theme .flexCenter p,
+.dark-theme label {
+    color: white;
+}
+
+.dark-theme input[type="text"]:hover,
+.dark-theme input[type="password"]:hover,
+.dark-theme input[type="email"]:hover,
+.dark-theme input[type="number"]:hover,
+.dark-theme select:hover,
+.dark-theme .profileBlock section:hover h2 {
+    border-color: #7DBBF1;
+}
+
+/* таблица пользователей */
+.dark-theme .table-users tr:nth-child(odd) td,
+.dark-theme .table-users tr:nth-child(odd) th {
+    background-color: #3B3B3B;
+}
+
+.dark-theme .table-users tr,
+.dark-theme .table-users td {
+    border: none;
+}
+
+.dark-theme .table-users th {
+    color: white;
+}

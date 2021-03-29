@@ -1,0 +1,273 @@
+﻿@model PageModel
+@{ 
+    UserModel user = Context.Session.GetObject<UserModel>("userModel");
+}    
+<article>
+        <h1 id="element">Элемент <code>&lt;canvas&gt;</code></h1>
+        <div class="content-container">
+            <div class="Coding noActive" id="Coding1" mode="text/html">
+                <textarea name="code">
+ <canvas id="tutorial" width="150" height="150"> 
+ </canvas></textarea>
+                <div class="btnBox">
+                    <button>
+                        <span class="material-icons">
+                            filter_none
+                        </span>
+                    </button>
+                </div>
+            </div>
+            <p>
+                Он выглядит как элемент <code>&lt;img&gt;</code>, но его отличие в том, что он не имеет атрибутов <span class="sapid">src</span> и <span class="sapid">alt</span>. Элемент <code>&lt;canvas&gt;</code> имеет только два атрибута - <b>ширину</b> и <b>высоту</b>. Оба они не обязательны и могут быть выставлены с использованием свойств DOM. Если атрибуты высоты и ширины не установлены, canvas будет по умолчанию ширинуой <b>300 пикселей</b> и в высоту <b>150 пикселей</b>. Вы так же можете выставить размеры произвольно в CSS, но во время рендеринга изображение будет масштабироваться в соответствии с его размером и ориентацией.
+            </p>
+            <p class="note">
+                <strong>Примечание: </strong>
+                Если вид вашего изображения кажется вам искаженным, попробуйте указать атрибуты ширинуы и высоты в явном виде в атрибутах <code>&lt;canvas&gt;</code>, а не с помощью CSS.
+            </p>
+            <p>
+                Атрибут <span class="sapid">id</span> не специфичен для элемента <code>&lt;canvas&gt;</code>, но он может быть применен по умолчанию в атрибутах HTML, так как он может быть использован (почти) для любого элемента HTML (так же как класс). Это всегда отличная идея использовать <span class="sapid">id</span>, так как это позволяет намного проще идентифицировать наш элемент в сценарии.
+                <br><br>
+                Элемент <code>&lt;canvas&gt;</code> может быть стилизован также, как любое изображение (margin, border, background, и т. д.). Эти правила, как бы то ни было, фактически не влияют на отрисовку в canvas. Мы увидим как это сделано позже в этом руководстве. Когда стили не указаны, canvas будет по умолчанию абсолютно прозрачным.
+            </p>
+        </div>
+        <div class="information">
+            <h3 id="content">
+                Запасное содержимое
+            </h3>
+            <div class="content-container">
+                <p>
+                    Из-за того, что старые браузеры (в особенности, версии Internet Explorer раннее чем 9) не поддерживают элемент <code>&lt;canvas&gt;</code>, Вам следует предоставить запасное содержимое для отображения этими браузерами.
+                    <br><br>
+                    Это очень просто: мы всего лишь предоставляем альтернативное содержимое внутри элемента <code>&lt;canvas&gt;</code>. Браузеры, которые не поддерживают <code>&lt;canvas&gt;</code> проигнорируют container и отобразят запасное содержимое этого тега. Браузеры, которые поддерживают <code>&lt;canvas&gt;</code> проигнорируют запасное содержимое, и просто нормально отобразят canvas.
+                    <br><br>
+                    Например, мы можем предоставить текстовое описание содержимого canvas или предоставить статичное изображение динамически отображаемого содержимого. Это может выглядеть как-то так:
+                </p>
+                <div class="Coding noActive" id="Coding2" mode="text/html">
+                    <textarea name="code">
+ <canvas id="stockGraph" width="150" height="150">
+     Не поддерживается браузером
+ </canvas>
+ 
+ <canvas id="clock" width="150" height="150">
+     <img src="images/clock.png" width="150" height="150" alt=""/>
+ </canvas></textarea>
+                    <div class="btnBox">
+                        <button>
+                            <span class="material-icons">
+                                filter_none
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <p>
+                    Сообщать пользователю о том, что его браузер не поддерживает canvas не поможет тем, кто не может прочесть содержимое тега canvas, к примеру. Предоставление полезной информации в дополнительном canvas делает этот тег более доступным для широкого использования.
+                </p>
+            </div>
+        </div>
+        <div class="information">
+            <h3 id="tagneedless">
+                Требуется тег <code>&lt;/canvas&gt;</code>
+            </h3>
+            <div class="content-container">
+                <p>
+                    В отличии от элемента <code>&lt;img&gt;</code>, элемент <code>&lt;canvas&gt;</code> требует закрывающийся тег (<code>&lt;/canvas&gt;</code>). Если этот тег не предоставлен, остаток документа будет считаться запасным контентом и не будет отображен.
+                    <br><br>
+                    Если запасной контент не нужен, простой <span class="sapid">&lt;canvas id="foo" ...&gt;&lt;/canvas&gt;</span> полностью совместим со всеми браузерами, что поддерживают canvas.
+                </p>
+            </div>
+        </div>
+    </article>
+    <article>
+        <h1 id="rendering">Рендеринг содержимого (контекста)</h1>
+        <div class="content-container">
+            <p>
+                Элемент <code>&lt;canvas&gt;</code> в документе создается с фиксированным размером элемента для рисования, который может иметь один или несколько контекстов для рендеринга, создавая и манипулируя содержимым для показа. В данном руководстве мы сфокусируемся на 2D рендеринге. Другие контексты могут предоставлять разные типы рендеринга, к примеру WebGl использует 3D контекст основанный на OpenGL ES.
+                <br><br>
+                Холст изначально пустой и прозрачный. Первым делом скрипт получает доступ к контексту и отрисовывает его. Элемент <code>&lt;canvas&gt;</code> имеет метод <span class="sapid func">getContext()</span>, используется для получения контекста визуализации и ее функции рисования. getContext() принимает один параметр, тип контекста. Для 2D графики, которая охвачена этим руководством будем использвать метку "2d".
+            </p>
+            <div class="Coding noActive" id="Coding3" mode="javascript">
+                <textarea name="code">
+ var canvas = document.getElementById('tutorial');
+ var ctx = canvas.getContext('2d');</textarea>
+                <div class="btnBox">
+                    <button>
+                        <span class="material-icons">
+                            filter_none
+                        </span>
+                    </button>
+                </div>
+            </div>
+            <p>
+                В первой строке скрипта мы получаем узел нашего холста <code>&lt;canvas&gt;</code>, далее с помощью <span class="sapid">document.getContext()</span> метода мы присваиваем ему контекст. Имея узел элемента , вы всегда можете получить для рисования контекст при помощи метода <span class="sapid">getContext()</span>.
+            </p>
+        </div>
+    </article>
+    <article>
+        <h1 id="example">Простой пример</h1>
+        <div class="content-container">
+            <p>Для начала, давайте посмотрим на простой пример, который рисует два пересекающихся прямоугольника, один из которых имеет прозрачность alpha. Мы изучим, как это работает более детально в последующих примерах.</p>
+            <div class="Coding@(user == null ? " lock" : "" )" mode="text/html" id="Coding4" codeRun="">
+                <textarea name="code">
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Canvas tutorial</title>
+    <script type="text/javascript">
+      function draw(){
+         var canvas = document.getElementById('tutorial');
+         var ctx = canvas.getContext("2d");
+
+         ctx.fillStyle = "rgb(200,0,0)";
+         ctx.fillRect(50, 50, 55, 50);
+
+         ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
+         ctx.fillRect(70, 70, 55, 50);
+      }
+    </script>
+    <style type="text/css">
+      * { margin: 0; }
+      canvas { border: 1px solid black; }
+    </style>
+  </head>
+  <body onload="draw();">
+    <canvas id="tutorial" width="150" height="150"></canvas>
+  </body>
+</html></textarea>
+                <div class="btnBox">
+                    <button>
+                        <span class="material-icons">
+                            filter_none
+                        </span>
+                    </button>
+                    <button>
+                        <span class="material-icons">
+                            replay
+                        </span>
+                    </button>
+                </div>
+                <p>Результат:</p>
+                <iframe scrolling="no" class="preview"></iframe>
+            </div>
+        </div>
+    </article>
+    <article>
+        <h1 id="example2">Пример часов</h1>
+        <div class="content-container">
+            <div class="Coding@(user == null ? " lock" : "" )" mode="javascript" id="Coding5">
+                <textarea name="code">
+ function clock(){
+    var now = new Date();
+    var canvas = document.getElementById('canvas');
+    ctx = canvas.getContext('2d');
+    ctx.save();
+    ctx.clearRect(0,0,300,200);
+    ctx.translate(150,100);
+    ctx.scale(0.4,0.4);
+    ctx.rotate(-Math.PI/2);
+    ctx.strokeStyle = "black";
+    ctx.fillStyle = "white";
+    ctx.lineWidth = 8;
+    ctx.lineCap = "round";
+  
+    // Hour marks
+    ctx.save();
+    for (var i=0;i<12;i++){ 
+       ctx.beginPath();
+       ctx.rotate(Math.PI/6);
+       ctx.moveTo(100,0);
+       ctx.lineTo(120,0);
+       ctx.stroke();
+    }
+    ctx.restore();
+  
+    // Minute marks
+    ctx.save();
+    ctx.lineWidth = 5;
+    for (i=0;i<60;i++){ 
+       if (i%5!=0) {
+          ctx.beginPath();
+          ctx.moveTo(117,0);
+          ctx.lineTo(120,0);
+          ctx.stroke();
+       }
+       ctx.rotate(Math.PI/30);
+    }
+    ctx.restore();
+   
+    var sec = now.getSeconds();
+    var min = now.getMinutes();
+    var hr  = now.getHours();
+    hr = hr>=12 ? hr-12 : hr;
+  
+    ctx.fillStyle = "black";
+  
+    // write Hours
+    ctx.save();
+    ctx.rotate( hr*(Math.PI/6) + (Math.PI/360)*min + (Math.PI/21600)*sec )
+    ctx.lineWidth = 14;
+    ctx.beginPath();
+    ctx.moveTo(-20,0);
+    ctx.lineTo(80,0);
+    ctx.stroke();
+    ctx.restore();
+  
+    // write Minutes
+    ctx.save();
+    ctx.rotate( (Math.PI/30)*min + (Math.PI/1800)*sec )
+    ctx.lineWidth = 10;
+    ctx.beginPath();
+    ctx.moveTo(-28,0);
+    ctx.lineTo(112,0);
+    ctx.stroke();
+    ctx.restore();
+   
+    // Write seconds
+    ctx.save();
+    ctx.rotate(sec * Math.PI/30);
+    ctx.strokeStyle = "#D40000";
+    ctx.fillStyle = "#D40000";
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.moveTo(-30,0);
+    ctx.lineTo(83,0);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(0,0,10,0,Math.PI*2,true);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(95,0,10,0,Math.PI*2,true);
+    ctx.stroke();
+    ctx.fillStyle = "rgba(0,0,0,0)";
+    ctx.arc(0,0,3,0,Math.PI*2,true);
+    ctx.fill();
+    ctx.restore();
+  
+    ctx.beginPath();
+    ctx.lineWidth = 14;
+    ctx.strokeStyle = '#325FA2';
+    ctx.arc(0,0,142,0,Math.PI*2,true);
+    ctx.stroke();
+  
+    ctx.restore();
+  
+    window.requestAnimationFrame(clock);
+}
+
+window.requestAnimationFrame(clock);</textarea>
+                <div class="btnBox">
+                    <button>
+                        <span class="material-icons">
+                            filter_none
+                        </span>
+                    </button>
+                    <button>
+                        <span class="material-icons">
+                            replay
+                        </span>
+                    </button>
+                </div>
+                <p>Результат:</p>
+                <iframe scrolling="no" class="preview"></iframe>
+            </div>
+        </div>
+    </article>

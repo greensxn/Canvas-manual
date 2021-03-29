@@ -1,0 +1,13 @@
+﻿@model Nav
+<li>
+    <a class="list-guide-name" href="#@Model.link">@Model.name</a>
+    @if (Model.extra != null) {
+        <ol>
+            @foreach (NavExtra extra in Model.extra) {
+                <li>
+                    <a href="#@extra.link">@extra.name</a>
+                </li>
+            }
+        </ol>
+    }
+</li>

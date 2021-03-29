@@ -1,0 +1,429 @@
+﻿@model PageModel
+@{
+    UserModel user = Context.Session.GetObject<UserModel>("userModel");
+}
+<article>
+    <div class="content-container">
+        <p>
+            В главе о рисовании фигур, я использовал для линий и заполнения только стили по умолчанию. Здесь мы будем исследовать опции canvas, которые мы имеем в нашем распоряжении, чтобы сделать наши рисунки немного более привлекательными. Вы узнаете, как добавлять различные цвета, стили линий, градиенты, узоры и тени вашим рисункам.
+        </p>
+    </div>
+</article>
+<article>
+    <h1 id="colors">Цвета</h1>
+    <div class="content-container">
+        <p>
+            До сих пор мы видели только методы рисования контекста. Если мы хотим применить цвета к фигуре, то есть два важных свойства, которые мы можем использовать: <span class="sapid">fillStyle</span> и <span class="sapid">strokeStyle</span>.
+        </p>
+        <dl>
+            <dt><span class="sapid">fillStyle = color</span></dt>
+            <dd>Устанавливает стиль для фона фигур.</dd>
+            <dt><span class="sapid">strokeStyle = color</span></dt>
+            <dd>Устанавливает стиль контура фигуры.</dd>
+        </dl>
+        <p>
+            <span class="sapid">color</span> может быть цветом, (строка, представленная в CSS <code>&lt;color&gt;</code>), градиентом или паттерном. Градиенты и паттерны мы рассмотрим позже. По умолчанию цвет фона и контура — черный (значение CSS цвета <span class="sapid">#000000</span>).
+        </p>
+        <p class="note">
+            <strong>На заметку:</strong> Когда вы устанавливаете значения <span class="sapid">strokeStyle</span> и/или <span class="sapid">fillStyle</span>, то новое значение становится стандартным для всех фигур, которые будут нарисованы с этого момента. Когда вам нужен другой цвет, вы должны перезаписать значение в <span class="sapid">fillStyle</span> или в <span class="sapid">strokeStyle</span> для каждой фигуры.
+        </p>
+        <p>
+            Чтобы строка <span class="sapid">color</span> считалась валидной, она должна соответствовать CSS <code>&lt;color&gt;</code>. Далее приведены примеры того, как можно по-разному задать один и тот же цвет.
+        </p>
+        <div class="Coding noActive" id="Coding1" mode="javascript">
+            <textarea name="code">
+ // все параметры ставят fillStyle цвет 'orange'
+  
+ ctx.fillStyle = "orange";
+ ctx.fillStyle = "#FFA500";
+ ctx.fillStyle = "rgb(255, 165, 0)";
+ ctx.fillStyle = "rgba(255, 165, 0, 1)";</textarea>
+            <div class="btnBox">
+                <button>
+                    <span class="material-icons">
+                        filter_none
+                    </span>
+                </button>
+            </div>
+        </div>
+        <div class="information">
+            <h3 id="fillStyle">Пример fillStyle</h3>
+            <div class="content-container">
+                <p>
+                    В этом примере мы опять воспользуемся двойным циклом, чтобы нарисовать сетку из прямоугольников, каждый из которых имеет свой цвет. Окончательное изображение должно иметь вид, как показано на скриншоте. Здесь не происходит ничего сверхъестественного. Мы используем две переменные <span class="sapid">i</span> и <span class="sapid">j</span> для генерации уникального RGB цвета для каждого квадрата и изменяем только красные и зеленые значения. Синий канал представляет собой фиксированное значение. Путем изменения каналов вы можете генерировать всю палитру. Увеличив количество шагов вы можете достигнуть такого вида палитры, какая используется в Photoshop.
+                </p>
+                <div class="Coding@(user == null ? " lock" : "" )" id="Coding2" mode="javascript">
+                    <textarea name="code">
+ var canvas = document.getElementById('canvas');
+ if (canvas.getContext) {
+    var ctx = canvas.getContext('2d');
+    for (var i = 0; i < 8; i++) {
+        for (var j = 0; j < 12; j++) {
+            ctx.fillStyle = 'rgb(' + Math.floor(255 - 30 * i) + ',' + Math.floor(255 - 20 * j) + ', 0)';
+            ctx.fillRect(j * 25, i * 25, 25, 25);
+        }
+    }
+ }</textarea>
+                    <div class="btnBox">
+                        <button>
+                            <span class="material-icons">
+                                filter_none
+                            </span>
+                        </button>
+                        <button>
+                            <span class="material-icons">
+                                replay
+                            </span>
+                        </button>
+                    </div>
+                    <p>Результат:</p>
+                    <iframe scrolling="no" class="preview"></iframe>
+                </div>
+            </div>
+        </div>
+        <div class="information">
+            <h3 id="strokeStyle">Пример strokeStyle</h3>
+            <div class="content-container">
+                <p>
+                    Этот пример похож на предыдущий, но мы используем свойство <span class="sapid">strokeStyle</span> чтобы изменить цвета очертаний фигур. Так же мы используем метод <span class="sapid func">arc()</span> для рисования окружностей вместо квадратов.
+                </p>
+            </div>
+            <div class="Coding@(user == null ? " lock" : "" )" id="Coding3" mode="javascript">
+                <textarea name="code">
+ var canvas = document.getElementById('canvas');
+ if (canvas.getContext) {
+    var ctx = canvas.getContext('2d');
+    for (var i = 0; i < 8; i++){
+        for (var j = 0; j < 12; j++){
+            ctx.strokeStyle = 'rgb(0, ' + Math.floor(255 - 42.5 * i) + ', ' + 
+            Math.floor(255 - 42.5 * j) + ')';
+            ctx.beginPath();
+            ctx.arc(12.5 + j * 25, 12.5 + i * 25, 10, 0, Math.PI * 2, true);
+            ctx.stroke();
+      }
+    }
+ }</textarea>
+                <div class="btnBox">
+                    <button>
+                        <span class="material-icons">
+                            filter_none
+                        </span>
+                    </button>
+                    <button>
+                        <span class="material-icons">
+                            replay
+                        </span>
+                    </button>
+                </div>
+                <p>Результат:</p>
+                <iframe scrolling="no" class="preview"></iframe>
+            </div>
+        </div>
+</article>
+<article>
+    <h1 id="opacity">Прозрачность</h1>
+    <div class="content-container">
+        <p>
+            В дополнении к рисованию непрозрачных фигур, мы также можем рисовать прозрачные (полупрозрачные) фигуры. Это делается через установку свойства <span class="sapid">globalAlpha</span> или задачи полупрозрачного цвета фона или контура.
+        </p>
+        <dl>
+            <dt><span class="sapid">globalAlpha = transparencyValue</span></dt>
+            <dd>Для применения, указывается значения прозрачности для всех будущих фигур, что будут нарисованы на canvas. Значение полупрозрачности могут быть между 0.0 (полная прозрачность) и 1.0 (полная непрозрачность). Значение 1.0 (полная непрозрачность) установлено по умолчанию.</dd>
+        </dl>
+        <p>
+            Свойство <span class="sapid">globalAlpha</span> может быть использовано, если вы хотите рисовать формы с одинаковой прозрачностью, но в иной ситуации, обычно устанавливают прозрачность индивидуально к каждой форме, когда указывают их цвет.
+            <br><br>
+            Так как свойства <span class="sapid">strokeStyle</span> и <span class="sapid">fillStyle</span> принимают цветовые значения rgba через CSS, мы можем использовать следующее обозначение для назначения прозрачных цветов.
+        </p>
+        <div class="Coding noActive" id="Coding4" mode="javascript">
+            <textarea name="code">
+ ctx.strokeStyle = "rgba(255, 0, 0, 0.5)";
+ ctx.fillStyle = "rgba(255, 0, 0, 0.5)";</textarea>
+            <div class="btnBox">
+                <button>
+                    <span class="material-icons">
+                        filter_none
+                    </span>
+                </button>
+            </div>
+        </div>
+        <p>
+            Функция <span class="sapid func">rgba()</span> похожа на функцию <span class="sapid func">rgb()</span>, но имеет один дополнительный параметр. Последний параметр устанавливает значение прозрачности для конкретного цвета. Действующий диапозон значений находится между 0.0 (полная прозрачность) и 1.0 (полная непрозрачность).
+        </p>
+    </div>
+     <div class="information">
+         <h3 id="globalAlpha">
+             Пример globalAlpha
+         </h3>
+         <div class="content-container">
+             <p>
+                 В данном примере мы нарисуем фон и четыре квадрата с различными цветами.  Сверху изображения будет выведен набор полупрозрачных кругов. Установим свойство globalAlpha значением 0.2, которое будет использовано для всех последующих форм. Каждый шаг цикла рисует круг с большим радиусом. По окончанию получим радиальный градиент. Накладывая еще больше кругов друг на друга, мы фактически сможем уменьшить прозрачность ранее нарисованных кругов. Увеличив счетчик итераций, при этом рисуя еще круги, мы сможем добиться исчезновение центра изображения.
+             </p>
+             <div class="Coding@(user == null ? " " : "" )" mode="javascript" id="Coding5">
+                 <textarea name="code">
+ var canvas = document.getElementById('canvas');
+ var ctx = canvas.getContext('2d');
+ 
+// фон изображения
+ ctx.fillStyle = '#FD0';
+ ctx.fillRect(75,25,75,75);
+ ctx.fillStyle = '#6C0';
+ ctx.fillRect(150,25,75,75);
+ ctx.fillStyle = '#09F';
+ ctx.fillRect(75,100,75,75);
+ ctx.fillStyle = '#F30';
+ ctx.fillRect(150,100,75,75);
+ ctx.fillStyle = '#FFF';
+
+ // устанавливаем значение прозрачности
+ ctx.globalAlpha = 0.2;
+
+ // Рисуем полупрозрачные круги
+ for (i=0;i<7;i++){
+   ctx.beginPath();
+   ctx.arc(150,100,10+10*i,0,Math.PI*2,true);
+   ctx.fill();
+ }</textarea>
+                 <div class="btnBox">
+                     <button>
+                         <span class="material-icons">
+                             filter_none
+                         </span>
+                     </button>
+                     <button>
+                         <span class="material-icons">
+                             replay
+                         </span>
+                     </button>
+                 </div>
+                 <p>Результат:</p>
+                 <iframe scrolling="no" class="preview"></iframe>
+             </div>
+         </div>
+    </div>
+     <div class="information">
+         <h3 id="rgba">
+             Пример использования rgba()
+         </h3>
+         <div class="content-container">
+             <p>
+                 В этом втором примере мы делаем что-то похожее на предыдущее, но вместо рисования кругов друг над другом, я рисовал маленькие прямоугольники с увеличением непрозрачности. Использование <span class="sapid func">rgba()</span> добавляет контроля и гибкости, поскольку мы можем индивидуально настраивать стиль заливки и штриха.
+             </p>
+             <div class="Coding@(user == null ? " " : "" )" mode="javascript" id="Coding6">
+                 <textarea name="code">
+ var canvas = document.getElementById('canvas');
+ var ctx = canvas.getContext('2d');
+ 
+ // Нарисовать фон
+ ctx.fillStyle = 'rgb(255,221,0)';
+ ctx.fillRect(75,20,150,57.5);
+  ctx.fillStyle = 'rgb(102,204,0)';
+ ctx.fillRect(75,57.5,150,57.5);
+ ctx.fillStyle = 'rgb(0,153,255)';
+ ctx.fillRect(75,95,150,57.5);
+ ctx.fillStyle = 'rgb(255,51,0)';
+ ctx.fillRect(75,132.5,150,37.5);
+
+ // Нарисовать полупрозрачные прямоугольники
+ for (var i=0;i<10;i++){
+    ctx.fillStyle = 'rgba(255,255,255,'+(i+1)/10+')';
+    for (var j=0;j<4;j++){
+       ctx.fillRect(80+i*14,25+j*37.5,14,27.5);
+    }
+ }</textarea>
+                 <div class="btnBox">
+                     <button>
+                         <span class="material-icons">
+                             filter_none
+                         </span>
+                     </button>
+                     <button>
+                         <span class="material-icons">
+                             replay
+                         </span>
+                     </button>
+                 </div>
+                 <p>Результат:</p>
+                 <iframe scrolling="no" class="preview"></iframe>
+             </div>
+         </div>
+    </div>
+</article>
+<article>
+    <h1 id="lineStyle">Стили линий</h1>
+    <div class="content-container">
+        <p>
+            Есть несколько свойств, которые позволяют нам стилизовать строки.
+        </p>
+        <dl>
+            <dt><span class="sapid">lineWidth = value</span></dt>
+            <dd>Устанавливает ширину линий, рисуемых в будущем.</dd>
+            <dt><span class="sapid">lineCap = type</span></dt>
+            <dd>Устанавливает внешний вид концов линий.</dd>
+            <dt><span class="sapid">lineJoin = type</span></dt>
+            <dd>Устанавливает внешний вид «углов», где встречаются линии.</dd>
+            <dt><span class="sapid">miterLimit = value</span></dt>
+            <dd>Устанавливает ограничение на митру, когда две линии соединяются под острым углом, чтобы вы могли контролировать её толщину.</dd>
+            <dt><span class="sapid func">getLineDash()</span></dt>
+            <dd>Возвращает текущий массив тире штриховки, содержащий четное число неотрицательных чисел.</dd>
+            <dt><span class="sapid func">setLineDash(segments)</span></dt>
+            <dd>Устанавливает текущий пунктир линии.</dd>
+            <dt><span class="sapid">lineDashOffset = value</span></dt>
+            <dd>Указывает, где следует начинать тире массива в строке.</dd>
+        </dl>
+        <p>Вы лучше поймете, что они делают, глядя на приведенные ниже примеры.</p>
+    </div>
+    <div class="information">
+        <h3 id="exampleLineWidth">Пример lineWidth</h3>
+        <div class="content-container">
+            <p>
+                Это свойство задает толщину текущей строки. Значения должны быть положительными. По умолчанию для этого значения установлено 1.0 единицы.
+                <br><br>
+                Ширина линии - это толщина хода, центрированного по данному пути. Другими словами, область, которая нарисована, простирается до половины ширины линии по обе стороны пути. Поскольку координаты холста не напрямую ссылаются на пиксели, особое внимание следует уделять получению четких горизонтальных и вертикальных линий.
+                <br><br>
+                В приведенном ниже примере 10 прямых линий рисуются с увеличением ширины линий. Линия в крайнем левом углу - 1.0 единицы. Тем не менее, толщина левой и всех других линий нечетной ширины не выглядят четкими из-за позиционирования пути.
+            </p>
+            <div class="Coding@(user == null ? " lock" : "" )" mode="javascript" id="Coding7">
+                <textarea name="code">
+ var canvas = document.getElementById('canvas');
+ var ctx = canvas.getContext('2d');
+
+ for (var i = 0; i < 10; i++){
+    ctx.lineWidth = 1+i;
+    ctx.beginPath();
+    ctx.moveTo(80+i*14,50);
+    ctx.lineTo(80+i*14,150);
+    ctx.stroke();
+ }</textarea>
+                <div class="btnBox">
+                    <button>
+                        <span class="material-icons">
+                            filter_none
+                        </span>
+                    </button>
+                    <button>
+                        <span class="material-icons">
+                            replay
+                        </span>
+                    </button>
+                </div>
+                <p>Результат:</p>
+                <iframe scrolling="no" class="preview"></iframe>
+            </div>
+        </div>
+    </div>
+    <div class="information">
+        <h3 id="exampleLineCap">Пример lineCap</h3>
+        <div class="content-container">
+            <p>
+                Свойство lineCap определяет, как выводятся конечные точки каждой строки. Для этого свойства есть три возможных значения: butt, round и square. По умолчанию для этого свойства установлено значение butt.
+            </p>
+            <dl>
+                <dt><span class="sapid">butt</span></dt>
+                <dd>
+                    Концы линий соответствуют крайним точкам.
+                </dd>
+                <dt><span class="sapid">round</span></dt>
+                <dd>Концы линий округлены.</dd>
+                <dt><span class="sapid">square</span></dt>
+                <dd>Концы линий описаны квадратом с равной шириной и половиной высоты толщины линии.</dd>
+            </dl>
+            <div class="Coding@(user == null ? " lock" : "" )" mode="javascript" id="Coding8">
+                <textarea name="code">
+ var canvas = document.getElementById('canvas');
+ var ctx = canvas.getContext('2d');
+
+ var lineCap = ['butt','round','square'];
+
+ ctx.strokeStyle = '#09f';
+ ctx.beginPath();
+ ctx.moveTo(100,30);
+ ctx.lineTo(250,30);
+ ctx.moveTo(100,170);
+ ctx.lineTo(250,170);
+ ctx.stroke();
+
+ // Рисование линий
+ ctx.strokeStyle = 'black';
+ for (var i=0;i<lineCap.length;i++){
+   ctx.lineWidth = 15;
+   ctx.lineCap = lineCap[i];
+   ctx.beginPath();
+   ctx.moveTo(125+i*50,30);
+   ctx.lineTo(125+i*50,170);
+   ctx.stroke();
+ }</textarea>
+                <div class="btnBox">
+                    <button>
+                        <span class="material-icons">
+                            filter_none
+                        </span>
+                    </button>
+                    <button>
+                        <span class="material-icons">
+                            replay
+                        </span>
+                    </button>
+                </div>
+                <p>Результат:</p>
+                <iframe scrolling="no" class="preview"></iframe>
+            </div>
+        </div>
+    </div>
+      <div class="information">
+          <h3 id="exampleLineJoin">
+              Пример lineJoin
+          </h3>
+        <div class="content-container">
+            <p>
+                Свойство lineJoin определяет, как соединяются два сегмента (линий, дуг или кривых) с ненулевой длиной в форме (вырожденные сегменты с нулевой длиной, заданные конечные точки и контрольные точки находятся точно в том же положении - пропущены).
+                <br><br>
+                Для этого свойства есть три возможных значения: round, bevel и miter. По умолчанию для этого свойства установлено значение miter. Обратите внимание, что настройка lineJoin не действует, если два связанных сегмента имеют одно и то же направление, потому что в этом случае не будет добавлена ​​область соединения.
+            </p>
+            <dl>
+                <dt><span class="sapid">round</span></dt>
+                <dd>
+                    Радиус заполняемой части для скругленных углов равен половине ширины линии. центр этого радиуса совпадает с концами подключенных сегментов.
+                </dd>
+                <dt><span class="sapid">bevel</span></dt>
+                <dd>Заполняет дополнительную треугольную область между общей конечной точкой подключенных сегментов и отдельными внешними прямоугольными углами каждого сегмента. </dd>
+                <dt><span class="sapid">miter</span></dt>
+                <dd>Подключенные сегменты соединяются путем расширения их внешних краев для соединения в одной точке с эффектом заполнения дополнительной области в форме пастилки. Эта настройка выполняется с помощью свойства miterLimit, которое объясняется ниже.</dd>
+            </dl>
+            <p>В приведенном ниже примере показаны три разных пути, демонстрирующие каждый из этих трех свойств lineJoin; результат - выше. </p>
+            <div class="Coding@(user == null ? " lock" : "" )" mode="javascript" id="Coding9">
+                <textarea name="code">
+ var canvas = document.getElementById('canvas');
+ var ctx = canvas.getContext('2d');
+
+ var lineJoin = ['round','bevel','miter'];
+
+ ctx.lineWidth = 10;
+ for (var i=0;i<lineJoin.length;i++){
+   ctx.lineJoin = lineJoin[i];
+   ctx.beginPath();
+   ctx.moveTo(-5,5+i*40);
+   ctx.lineTo(35,45+i*40);
+   ctx.lineTo(75,5+i*40);
+   ctx.lineTo(115,45+i*40);
+   ctx.lineTo(155,5+i*40);
+   ctx.stroke();
+ }</textarea>
+                <div class="btnBox">
+                    <button>
+                        <span class="material-icons">
+                            filter_none
+                        </span>
+                    </button>
+                    <button>
+                        <span class="material-icons">
+                            replay
+                        </span>
+                    </button>
+                </div>
+                <p>Результат:</p>
+                <iframe scrolling="no" class="preview"></iframe>
+            </div>
+        </div>
+    </div>
+</article>

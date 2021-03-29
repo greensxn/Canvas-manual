@@ -1,0 +1,71 @@
+﻿@model PageModel
+<div class="account-container">
+
+    <h2 class="form-info">Редактировать аккаунт</h2>
+    <div class="form-container">
+
+        <form enctype="multipart/form-data" asp-controller="Account" asp-action="Edit" method="post">
+            <input type="hidden" asp-for="@Model.userEditModel.ID_user" value="@Model.user.ID_user" />
+
+            <fieldset>
+                <legend>Персональные данные:</legend>
+                <div>
+                    <input placeholder="Имя" asp-for="@Model.userEditModel.FirstName" value="@Model.user.FirstName" />
+                    <span asp-validation-for="@Model.userEditModel.FirstName"></span>
+                </div>
+
+                <div>
+                    <input placeholder="Фамилия" asp-for="@Model.userEditModel.LastName" value="@Model.user.LastName" />
+                    <span asp-validation-for="@Model.userEditModel.LastName"></span>
+                </div>
+
+                <div>
+                    <input placeholder="Логин" asp-for="@Model.userEditModel.Login" value="@Model.user.Login" />
+                    <span asp-validation-for="@Model.userEditModel.Login"></span>
+                </div>
+
+                <div>
+                    <input placeholder="Пароль" asp-for="@Model.userEditModel.Password" value="@Model.user.Password" />
+                    <span asp-validation-for="@Model.userEditModel.Password"></span>
+                </div>
+
+                <div class="flexCenter">
+                    <p>Фото</p>
+                    @{
+                        String AvatarLoc = "user.png";
+                        if (Model.user != null) {
+                            UserFile Avatar = Model.db.Files.Where(ph => ph.ID_user == Model.user.ID_user).FirstOrDefault();
+                            AvatarLoc = Avatar == null ? AvatarLoc : Avatar.Avatar;
+                        }
+                    }
+                    <img class="avatar s50" src="/lib/userDoc/@AvatarLoc" />
+                    <input type="file" asp-for="@Model.userEditModel.Avatar" />
+                </div>
+
+                <div class="flexCenter row" style="margin-top:10px;">
+                    <input id="photoDelete" asp-for="@Model.userEditModel.isDeletePhoto" type="checkbox" />
+                    <label for="photoDelete">Удалить фото</label>
+                </div>
+
+            </fieldset>
+
+            <fieldset>
+                <legend>Статус:</legend>
+                <div>
+                    <select asp-for="@Model.userEditModel.Role.Name">
+                        <option value="@Model.db.Roles.Where(r => r.Role == RoleType.ADMIN).FirstOrDefault().Name">Админ</option>
+                        <option value="@Model.db.Roles.Where(r => r.Role == RoleType.EDITOR).FirstOrDefault().Name">Редактор</option>
+                        <option value="@Model.db.Roles.Where(r => r.Role == RoleType.USER).FirstOrDefault().Name" selected>Пользователь</option>
+                    </select>
+                    <span asp-validation-for="@Model.userEditModel.Role.Name"></span>
+                </div>
+            </fieldset>
+
+            <input type="submit" class="btn green" value="Сохранить" />
+
+            <div class="validation" asp-validation-summary="All"></div>
+        </form>
+    </div>
+
+    <a class="center" asp-action="Users">Вернуться к списку пользователей</a>
+</div>

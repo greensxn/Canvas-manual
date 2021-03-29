@@ -1,0 +1,30 @@
+﻿@model PageModel
+@{
+    String symbol = ">";
+    NavOnPage[] navigations = Model.Navigation == null ? null : Model.Navigation.navigationOnPage;
+}
+<p class="navigation">
+    <a asp-controller="Home" asp-action="Index">
+        Меню
+    </a>
+    @symbol
+    @if (navigations != null) {
+        @for (int i = 0; i < navigations.Length; i++) {
+            <a asp-controller="@navigations[i].Controller" asp-action="@navigations[i].Page">
+                @navigations[i].Name
+            </a>
+            @symbol
+        }
+    }
+    <a href="" class="linkNow">
+        @Model.Title
+    </a>
+    @if (Model.isComments) {
+        <a class="siteComments" asp-action="comments" asp-route-page="@Model.Title">
+            <span class="material-icons" style="margin-right: 5px;">
+                question_answer
+            </span>
+            Комментарии (@Model.db.Comments.Where(c => c.ID_page == Model.Page.ID_page).Count())
+        </a>
+    }
+</p>

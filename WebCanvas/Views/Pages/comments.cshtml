@@ -1,0 +1,14 @@
+﻿@model PageModel
+@{
+    NavOnPage[] navigation = Model.Navigation.navigationOnPage;
+    WebPage PageWhoseComments = Model.db.GetPage(navigation[navigation.Length - 1].Name);
+    List<CommentModel> comments = Model.db.GetComments(PageWhoseComments.pageName);
+    Model.comments = comments;
+    Model.user = Context.Session.GetObject<UserModel>("userModel");
+    Model.Page = Model.db.Pages.Where(p => p.pageName == Model.Title).FirstOrDefault();
+    Model.Page.ID_page = PageWhoseComments.ID_page;
+}
+
+@if (comments != null) {
+    <partial name="_CommentsPartial" model="Model" />
+}

@@ -1,0 +1,100 @@
+﻿@using WebCanvas.Models
+@model PageModel
+@{
+    List<CommentModel> comments = Model.comments;
+    NavOnPage navigation = null;
+    if (Model.Navigation?.navigationOnPage != null) {
+        navigation = Model.Navigation.navigationOnPage[Model.Navigation.navigationOnPage.Length - 1];
+    }
+}
+<div class="comments-container">
+    <div class="comments">
+        <h1 id="comments" class="title-comments">
+            Комментарии (@comments.Count)
+        </h1>
+        @if (comments != null) {
+            <ul class="media-list authoSize">
+                @for (int i = comments.Count - 1; i >= 0; i--) {
+                    @if (comments[i].isReply) {
+                        continue;
+                    }
+                    UserModel userFromComment = Model.db.GetUser(comments[i].ID_user);
+                    UserFile filesCommentUser = Model.db.Files.Where(f => f.ID_user == Model.comments[i].ID_user).FirstOrDefault();
+                    String avaCommentUser = "\\lib\\userDoc\\" + (filesCommentUser == null ? "user.png" : filesCommentUser.Avatar);
+                    List<CommentModel> insertedComments = Model.db.GetReplyComments(comments[i].ID_comment);
+                    <li class="media@(insertedComments.Count > 0 ? " map Parent" : "")">
+                        <div class="media-left">
+                            <img class="avatar s35" src="@avaCommentUser" alt="Ava">
+                        </div>
+                        <div class="media-body">
+                            <div class="media-heading">
+                                @{
+                                    String statusCommentUser = $"{(userFromComment.Role.RoleType == RoleType.ADMIN ? "Администратор" : "")}{(userFromComment.Role.RoleType == RoleType.EDITOR ? "Редактор" : "")}";
+                                }
+                                <div class="profileName">
+                                    <p class="author">@($"{userFromComment.FirstName} {userFromComment.LastName}")<p />
+                                    <p class="author-status">@statusCommentUser</p>
+                                    @if (Model.user != null && (Model.user.ID_user == comments[i].ID_user || Model.user.Role.RoleType == RoleType.ADMIN)) {
+                                        <span class="delete-comment">
+                                            <form class="deleteCommentForm" onsubmit="pageDown()" asp-action="OnDeleteComment" method="post">
+                                                <input type="hidden" asp-for="@Model.newComment.ID_user" value="@comments[i].ID_user" />
+                                                <input type="hidden" asp-for="@Model.newComment.ID_comment" value="@comments[i].ID_comment" />
+                                                <input type="hidden" asp-for="@Model.newComment.ID_page" value="@comments[i].ID_page" />
+                                                <input type="hidden" asp-for="@Model.newComment.Commentary" value="@comments[i].Commentary" />
+                                                <input type="hidden" asp-for="Navigation.navigationOnPage[0].Name" value="@navigation?.Name" />
+                                                <input type="hidden" asp-for="Navigation.navigationOnPage[0].Controller" value="@navigation?.Controller" />
+                                                <input type="hidden" asp-for="Navigation.navigationOnPage[0].Page" value="@navigation?.Page" />
+                                                <input type="submit" class="btn red small" value="Удалить" />
+                                            </form>
+                                        </span>
+                                    }
+                                </div>
+                                <div class="metadata">
+                                    <span class="date">@Model.comments[i].Date.ToString("d MMMM yyyy, HH:mm")</span>
+                                </div>
+                            </div>
+                            <p class="media-text">@Model.comments[i].Commentary</p>
+                            <div class="footer-comment">
+                                @if (Model.user != null) {
+                                    <span class="comment-reply">
+                                        <input type="button" class="replyButton" onclick="ReplyComment(@Model.comments[i].ID_comment, '@userFromComment.FirstName')" value="ответить" />
+                                    </span>
+                                }
+                            </div>
+                            <!-- Вложенные медиа-компоненты -->
+                            @for (int j = 0; j < insertedComments.Count; j++) {
+                                Model.newComment = insertedComments[j];
+                                <partial name="_InsertedCommentPartial" model="Model" />
+                            }
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+    @if (Model.user != null) {
+        Model.newComment = new CommentModel();
+        <div class="sendBox">
+            <a asp-controller="Home" asp-action="Profile">
+                <img class="avatar s35" src="@Model.user.AvaLoc" alt="Ava">
+            </a>
+            <form onsubmit="pageDown()" id="commentForm" class="commentForm" asp-action="OnComment" method="post">
+                <textarea id="commentArea" placeholder="Написать комментарий..." class="commentArea" asp-for="@Model.newComment.Commentary"></textarea>
+                <input type="hidden" asp-for="@Model.newComment.ID_user" value="@Model.user.ID_user" />
+                <input type="hidden" asp-for="@Model.newComment.ID_page" value="@Model.Page.ID_page" />
+                <input type="hidden" asp-for="@Model.newComment.Date" value="@DateTime.Now" />
+
+                <input type="hidden" id="isReplyInput" asp-for="@Model.newComment.isReply" value="@false" />
+                <input type="hidden" id="replyIdInput" asp-for="@Model.newComment.ID_reply_comment" value="@null" />
+
+                <input type="hidden" asp-for="@Model.Navigation.navigationOnPage[0].Name" value="@navigation?.Name" />
+                <input type="hidden" asp-for="@Model.Navigation.navigationOnPage[0].Controller" value="@navigation?.Controller" />
+                <input type="hidden" asp-for="@Model.Navigation.navigationOnPage[0].Page" value="@navigation?.Page" />
+                <div class="btnBox_users">
+                    <input id="resetReplyBtn" onclick="resetReply()" class="btn orange" type="button" value="Сбросить" />
+                    <input id="commentBtn" class="btn blue" type="submit" value="Отправить" />
+                </div>
+            </form>
+        </div>
+    }
+</div>

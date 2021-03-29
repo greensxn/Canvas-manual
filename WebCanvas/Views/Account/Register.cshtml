@@ -1,0 +1,39 @@
+﻿@model PageModel
+<div class="account-container">
+    <h2 class="form-info">Регистрация</h2>
+    <div class="form-container">
+        <form id="registerForm" name="registerForm" class="noField" asp-action="Register" asp-controller="Account" method="post">
+            <div>
+                <input placeholder="Имя" type="text" asp-for="@Model.userRegisterModel.FirstName" value="@Model.user?.FirstName" />
+                <span asp-validation-for="@Model.userRegisterModel.FirstName" />
+            </div>
+            <div>
+                <input placeholder="Фамилия" type="text" asp-for="@Model.userRegisterModel.LastName" value="@Model.user?.LastName" />
+                <span asp-validation-for="@Model.userRegisterModel.LastName" />
+            </div>
+            <div>
+                <input placeholder="Почта" type="email" asp-for="@Model.userRegisterModel.Email" value="@Model.user?.Email" />
+                <span asp-validation-for="@Model.userRegisterModel.Email" />
+            </div>
+            <div>
+                <input placeholder="Логин" type="text" asp-for="@Model.userRegisterModel.Login" value="@Model.user?.Login" />
+                <span asp-validation-for="@Model.userRegisterModel.Login" />
+            </div>
+            <div>
+                <input placeholder="Пароль" type="password" asp-for="@Model.userRegisterModel.Password" value="@Model.user?.Password" />
+                <span asp-validation-for="@Model.userRegisterModel.Password" />
+            </div>
+            <div>
+                <input placeholder="Подтверждение пароля" type="password" asp-for="@Model.userRegisterModel.ConfirmPassword" value="@Model.user?.Password" />
+                <span asp-validation-for="@Model.userRegisterModel.ConfirmPassword" />
+            </div>
+
+            <input type="submit" class="btn blue" value="Регистрация" />
+
+            <div class="validation" asp-validation-summary="All"></div>
+        </form>
+    </div>
+    <a class="center" asp-action="LogIn">Вернуться ко входу</a>
+</div>
+
+<partial name="_ValidationScriptsPartial" />

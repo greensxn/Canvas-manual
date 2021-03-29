@@ -1,0 +1,483 @@
+﻿@model PageModel
+@{ 
+    UserModel user = Context.Session.GetObject<UserModel>("userModel");
+}
+<article>
+    <div class="content-container">
+        <p>
+            Теперь, установив наше окружение canvas, мы можем погрузиться в детали того, как рисовать в canvas. К концу этой статьи, Вы научитесь рисовать прямоугольники, треугольники, линии, дуги и кривые, при условии что Вы хорошо знакомы с основными геометрическими фигурами. Работа с путями весьма важна, когда рисуете объекты на canvas и мы увидим как это может быть сделано.
+            <br><br>
+            <b>Примеры возможностей канваса:</b>
+        </p>
+    </div>
+    <ol class="list-canvas">
+        <li>
+            <canvas id="c4" width="400" height="400"></canvas>
+            <p>
+                Различные фигуры в <strong>Canvas</strong>
+            </p>
+        </li>
+        <li>
+            <div class="can5">
+                <canvas id="c5" width="200" height="400"></canvas>
+                <p>
+                    Рисование прямой линии <br>
+                    (событие <span class="sapid">onclick</span>)
+                </p>
+                <div class="tooltip tip-can5">
+                    <h4>Канвас</h4>
+                    <span>событие <span class="sapid">onclick</span> работает при клике на канвас (поставьте две точки для отрисовки линии)</span>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="can6">
+                <canvas id="c6" width="400" height="400"></canvas>
+                <p>
+                    Движение за мышкой <br>
+                    Событие <span class="sapid">onmousemove</span>
+                </p>
+                <div class="tooltip tip-can6">
+                    <h4>Канвас</h4>
+                    <span>событие <span class="sapid">onmousemove</span> срабатывает когда вы водите мышкой по канвасу (кликните по канвасу что бы сфокусироваться на нём)</span>
+                </div>
+            </div>
+        </li>
+    </ol>
+</article>
+<article>
+    <h1 id="cell">Сетка</h1>
+    <div class="content-container" style="display: flex; justify-content: center; flex-direction: column; align-items: center;">
+        <p>
+            Перед тем, как мы начнем рисовать, нам нужно поговорить о сетке canvas или <b>координатной плоскости</b>. Наш HTML каркас из предыдущей страницы включал в себя элемент canvas 150 пикселей в ширинуу и 150 пикселей в высоту. Справа можно увидеть этот canvas с сеткой, накладываемой по умолчанию. Обычно 1 единица на сетке соответствует 1 пикселю на canvas. Начало координат этой сетки расположено в верхнем левом углу в координате (<span class="sapid">0</span>, <span class="sapid">0</span>). Все элементы размещены относительно этого начала. Таким образом, положение верхнего левого угла синего квадрата составляет <span class="sapid">х</span> пикселей слева и <span class="sapid">у</span> пикселей сверху, на координате (<span class="sapid">х</span>, <span class="sapid">у</span>). Позже в этом уроке мы увидим, как можно перевести начало координат в другое место, вращать сетку и даже масштабировать ее, но сейчас мы будем придерживаться настроек сетки по умолчанию.
+        </p>
+        <img src="../images/Canvas_default_grid.png" alt="" style="padding: 20px 0 20px 20px;">
+    </div>
+</article>
+<article>
+    <h1 id="path">Контуры (path)</h1>
+    <div class="information">
+        <h3 id="lineDraw">Рисование линий</h3>
+        <div class="content-container">
+            <p>
+                Для рисования прямых линий используйте метод <span class="sapid func">lineTo()</span>.
+            </p>
+            <dl>
+                <dt><span class="sapid func">lineTo(x, y)</span></dt>
+                <dd> Рисует линию с текущей позиции до позиции, определенной <span class="sapid">x</span> и <span class="sapid">y</span>.</dd>
+            </dl>
+            <p>
+                Этот метод принимает два аргумента x и y, которые являются координатами конечной точки линии. Начальная точка зависит от ранее нарисованных путей, причём конечная точка предыдущего пути является начальной точкой следующего и т. д. Начальная точка также может быть изменена с помощью метода <span class="sapid func">moveTo()</span>.
+                <br><br>
+                Пример ниже рисует два треугольника, один закрашенный и другой обведен контуром.
+            </p>
+            <div class="Coding@(user == null ? " lock" : "" )" mode="javascript" id="Coding1">
+                <textarea name="code">
+ var canvas = document.getElementById('canvas');
+ var ctx = canvas.getContext('2d');
+ 
+ ctx.beginPath();
+ ctx.lineWidth = 10;
+ ctx.moveTo(100, 150);
+ ctx.lineTo(200, 50);
+ ctx.stroke();</textarea>
+                <div class="btnBox">
+                    <button>
+                        <span class="material-icons">
+                            filter_none
+                        </span>
+                    </button>
+                    <button>
+                        <span class="material-icons">
+                            replay
+                        </span>
+                    </button>
+                </div>
+                <p>Результат:</p>
+                <iframe scrolling="no" class="preview"></iframe>
+            </div>
+            <p>
+                Остальные примитивные фигуры создаются контурами. Контур - это набор точек, которые, соединяясь в отрезки линий, могут образовывать различные фигуры, изогнутые или нет, разной ширинуы и разного цвета. Контур (или субконтур) может быть закрытым. <br><br>
+                Создание фигур используя контуры происходит в несколько важных шагов:
+            </p>
+            <ol class="listInfo">
+                <li>Сначала вы создаете контур.</li>
+                <li>Затем, используя команды рисования, рисуете контур.</li>
+                <li>Потом закрываете контур.</li>
+                <li>Созданный контур вы можете обвести или залить для его отображения.</li>
+            </ol>
+            <p>Здесь приведены функции, которые можно использовать в описанных шагах:</p>
+            <dl>
+                <dt><span class="sapid func">beginPath()</span></dt>
+                <dd>Создает новый контур. После создания используется в дальнейшем командами рисования при построении контуров.</dd>
+                <dt><span class="sapid func">closePath()</span></dt>
+                <dd>Закрывает контур, так что будущие команды рисования вновь направлены контекст.</dd>
+                <dt><span class="sapid func">stroke()</span></dt>
+                <dd>Рисует фигуру с внешней обводкой.</dd>
+                <dt><span class="sapid func">fill()</span></dt>
+                <dd>Рисует фигуру с заливкой внутренней области.</dd>
+            </dl>
+            <p>
+                Первый шаг создания контура заключается в вызове функции <span class="sapid func">beginPath()</span>. Внутри содержатся контуры в виде набора суб-контуров (линии, дуги и др.), которые вместе образуют форму фигуры. Каждый вызов этого метода очищает набор, и мы можем начинать рисовать новые фигуры.
+            </p>
+            <p class="note">
+                <strong>Заметка:</strong> Если текущий контур пуст (например, как после вызова <span class="sapid func">beginPath()</span> или на вновь созданном canvas), первой командой построения контура всегда является функция <span class="sapid func">moveTo()</span>. Поэтому мы всегда можем установить начальную позицию рисования контура после перезагрузки.
+            </p>
+            <p>
+                Вторым шагом является вызов методов, определяемых видом контура, который нужно нарисовать. Их мы рассмотрим позднее.
+                <br><br>
+                Третий и необязательный шаг - это вызов <span class="sapid func">closePath()</span>. Этот метод пытается закрыть фигуру, рисуя прямую линию из текущей точки в начальную. Если фигура была уже закрыта или является просто точкой, то функция ничего не делает.
+            </p>
+            <p class="note">
+                <strong>Заметка:</strong> Когда вы вызываете <span class="sapid func">fill()</span>, то каждая открытая фигура закрывается автоматически, так что вы можете не использовать <span class="sapid func">closePath()</span>. Это обстоятельство не имеет место в случае вызова stroke().
+            </p>
+        </div>
+    </div>
+    <div class="information">
+        <h3 id="circleDraw">Рисование дуг и окружностей</h3>
+        <div class="content-container">
+            <p>Для рисования дуг и окружностей, используем методы <span class="sapid func">arc()</span> и <span class="sapid func">arcTo()</span>.</p>
+            <dl>
+                <dt><span class="sapid func">arc(x, y, radius, startAngle, endAngle, anticlockwise)</span></dt>
+                <dd>Рисуем дугу с центром в точке (<span class="sapid">x</span>, <span class="sapid">y</span>) радиусом <span class="sapid">r</span>, начиная с угла <span class="sapid">startAngle</span> и заканчивая в <span class="sapid">endAngle</span> в направлении против часовой стрелки anticlockwise (по умолчанию по ходу движения часовой стрелки).</dd>
+                <dt><span class="sapid func">arcTo(x1, y1, x2, y2, radius)</span></dt>
+                <dd>Рисуем дугу с заданными контрольными точками и радиусом, соединяя эти точки прямой линией.</dd>
+            </dl>
+            <p>
+                Рассмотрим детальнее метод <span class="sapid func">arc()</span>, который имеет пять параметров: <span class="sapid">x</span> и <span class="sapid">y</span> — это координаты центра окружности, в которой должна быть нарисована дуга. <span class="sapid">radius</span> — не требует пояснений. Углы <span class="sapid">startAngle</span> и <span class="sapid">endAngle</span> определяют начальную и конечную точки дуги в радианах вдоль кривой окружности. Отсчет происходит от оси <span class="sapid">x</span>. Параметр <span class="sapid">anticlockwise</span> — логическое значение, которое, если <span class="sapid">true</span>, то рисование дуги совершается против хода часовой стрелки; иначе рисование происходит по ходу часовой стрелки.
+            </p>
+            <p class="note">
+                <strong>Заметка:</strong> Углы в функции <span class="sapid func">arc()</span> измеряют в радианах, не в градусах. Для перевода градусов в радианы вы можете использовать JavaScript-выражение: <span class="sapid">radians = (Math.PI/180)*degrees</span>.
+            </p>
+            <div class="Coding@(user == null ? " lock" : "" )" mode="javascript" id="Coding2">
+                <textarea name="code">
+ var canvas = document.getElementById('canvas');
+ var ctx = canvas.getContext('2d');
+  
+ ctx.beginPath();
+ ctx.arc(75, 75, 50, 0, 1 * Math.PI, true);
+ ctx.fill();
+  
+ ctx.beginPath();
+ ctx.arc(225, 75, 50, 0, 1 * Math.PI, false);
+ ctx.stroke();
+
+ ctx.beginPath();
+ var pi = Math.PI;
+ ctx.arc(120, 140, 50, 0, pi * 2, true);
+ ctx.fill();</textarea>
+                <div class="btnBox">
+                    <button>
+                        <span class="material-icons">
+                            filter_none
+                        </span>
+                    </button>
+                    <button>
+                        <span class="material-icons">
+                            replay
+                        </span>
+                    </button>
+                </div>
+                <p>Результат:</p>
+                <iframe scrolling="no" class="preview"></iframe>
+            </div>
+        </div>
+    </div>
+    <div class="information">
+        <h3 id="triangleDraw">Рисование треугольника</h3>
+        <div class="content-container">
+            <p>Например, код для рисования треугольника будет выглядеть как-то так:</p>
+            <div class="Coding@(user == null ? " lock" : "" )" mode="javascript" id="Coding3">
+                <textarea name="code">
+ var canvas = document.getElementById('canvas');
+ var ctx = canvas.getContext('2d');
+ 
+ ctx.beginPath();
+ ctx.moveTo(75, 100);
+ ctx.lineTo(200, 50);
+ ctx.lineTo(200, 150);
+ ctx.fill();</textarea>
+                <div class="btnBox">
+                    <button>
+                        <span class="material-icons">
+                            filter_none
+                        </span>
+                    </button>
+                    <button>
+                        <span class="material-icons">
+                            replay
+                        </span>
+                    </button>
+                </div>
+                <p>Результат:</p>
+                <iframe scrolling="no" class="preview"></iframe>
+            </div>
+        </div>
+    </div>
+    <div class="information">
+        <h3 id="rectangleDraw">Рисование прямоугольника</h3>
+        <div class="content-container">
+            В отличие от SVG, <code>&lt;canvas&gt;</code> поддерживает только одну примитивную фигуру: прямоугольник. Все другие фигуры должны быть созданы комбинацией одного или большего количества контуров (paths), набором точек, соединенных в линии. К счастью в ассортименте рисования контуров у нас есть функции, которые делают возможным составление очень сложных фигур.
+            <br><br>
+            Рассмотрим прямоугольник. Ниже представлены три функции рисования прямоугольников в canvas:
+            <dl>
+                <dt><span class="sapid func">rect(x, y, width, height)</span></dt>
+                <dd>Рисование обводки прямоугольника</dd>
+                <dt><span class="sapid func">fillRect(x, y, width, height)</span></dt>
+                <dd>Рисование заполненного прямоугольника.</dd>
+                <dt><span class="sapid func">strokeRect(x, y, width, height)</span></dt>
+                <dd>Рисование прямоугольного контура.</dd>
+                <dt><span class="sapid func">clearRect(x, y, width, height)</span></dt>
+                <dd>Очистка прямоугольной области, делая содержимое совершенно прозрачным.</dd>
+            </dl>
+            <ul class="listInfo">
+                Каждая из приведенных функций принимает несколько параметров:
+                <li style="padding-right: 30px;">
+                    <span class="sapid">x</span>, <span class="sapid">y</span> устанавливают положение верхнего левого угла прямоугольника в canvas (относительно начала координат);
+                </li>
+                <li>
+                    <span class="sapid">width</span>(ширинуа) и <span class="sapid">height</span>(высота) определяют размеры прямоугольника.
+                    Ниже приведена функция <span class="sapid func">draw()</span>, использующая эти три функции.
+                </li>
+            </ul>
+        </div>
+        <div class="information">
+            <p>Пример создания прямоугольных фигур:</p>
+            <div class="content-container">
+                <div class="Coding@(user == null ? " lock" : "" )" mode="javascript" id="Coding4">
+                    <textarea name="code">
+ var canvas = document.getElementById('canvas');
+ var ctx = canvas.getContext('2d');
+ 
+ ctx.rect(50, 50, 200, 100);
+ ctx.fill();</textarea>
+                    <div class="btnBox">
+                        <button>
+                            <span class="material-icons">
+                                filter_none
+                            </span>
+                        </button>
+                        <button>
+                            <span class="material-icons">
+                                replay
+                            </span>
+                        </button>
+                    </div>
+                    <p>Результат:</p>
+                    <iframe scrolling="no" class="preview"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="information">
+        <h3 id="penMove">Передвижение пера</h3>
+        <div class="content-container">
+            <p>
+                Одна очень полезная функция, которая ничего не рисует, но связана по смыслу с вышеописанными функциями - это <span class="sapid func">moveTo()</span>. Вы можете представить это как отрыв (подъем) пера от бумаги и его перемещение в другое место.
+            </p>
+            <dl>
+                <dt><span class="sapid func">moveTo(x, y)</span></dt>
+                <dd>Перемещает перо в точку с координатами x и y.</dd>
+            </dl>
+            <p>
+                При инициализации canvas или при вызове <span class="sapid func">beginPath()</span>, вы захотите использовать функцию <span class="sapid func">moveTo()</span> для перемещения в точку начала рисования. Можно использовать <span class="sapid func">moveTo()</span> и для рисования несвязанного(незакрытого) контура. Посмотрите на смайлик ниже.
+                <br><br>
+                Вы можете проверить это сами, используя участок кода ниже. Просто вставьте в функцию <span class="sapid func">draw()</span>, рассмотренную ранее.
+            </p>
+            <div class="Coding@(user == null ? " lock" : "" )" mode="javascript" id="Coding5">
+                <textarea name="code">
+ var canvas = document.getElementById('canvas');
+ var ctx = canvas.getContext('2d');
+  
+ ctx.beginPath();
+ ctx.arc(150, 100, 50, 0, Math.PI * 2, true); // Внешняя окружность
+ ctx.moveTo(184, 100);
+ ctx.arc(150, 100, 35, 0, Math.PI, false);  // рот (по часовой стрелке)
+ ctx.moveTo(135, 80);
+ ctx.arc(130, 80 , 5, 0, Math.PI * 2, true);  // Левый глаз
+ ctx.moveTo(175, 80);
+ ctx.arc(170, 80, 5, 0, Math.PI * 2, true);  // Правый глаз
+ ctx.stroke();</textarea>
+                <div class="btnBox">
+                    <button>
+                        <span class="material-icons">
+                            filter_none
+                        </span>
+                    </button>
+                    <button>
+                        <span class="material-icons">
+                            replay
+                        </span>
+                    </button>
+                </div>Результат:</p>
+                <iframe scrolling="no" class="preview"></iframe>
+            </div>
+        </div>
+    </div>
+</article>
+<article>
+    <h1 id="bezie">Кривые Безье</h1>
+    <div class="content-container">
+        <p>
+            Следующим типом доступных контуров являются кривые Безье, и к тому же доступны в кубическом и квадратичном вариантах. Обычно они используются при рисовании сложных составных фигур.
+        </p>
+        <dl>
+            <dt><span class="sapid func">quadraticCurveTo(cp1x, cp1y, x, y)</span></dt>
+            <dd>Рисуется квадратичная кривая Безье с текущей позиции пера в конечную точку с координатами <span class="sapid">x</span> и <span class="sapid">y</span>, используя контрольную точку с координатами <span class="sapid">cp1x</span> и <span class="sapid">cp1y</span>.</dd>
+            <dt><span class="sapid func">bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y)</span></dt>
+            <dd>Рисуется кубическая кривая Безье с текущей позиции пера в конечную точку с координатами x и y, используя две контрольные точки с координатами (<span class="sapid">cp1x</span>, <span class="sapid">cp1y</span>) и (<span class="sapid">cp2x</span>, <span class="sapid">cp2y</span>).</dd>
+        </dl>
+        <p>
+            Различие между ними можно увидеть на рисунке, изображенном справа. Квадратичная кривая Безье имеет стартовую и конечную точки (синие точки) и всего одну контрольную точку (красная точка), в то время как кубическая кривая Безье использует две контрольные точки.
+            <br><br>
+            Параметры x и y в этих двух методах являются координатами конечной точки. <span class="sapid">cp1x</span> и <span class="sapid">cp1y</span> — координаты первой контрольной точки, а <span class="sapid">cp2x</span> и <span class="sapid">cp2y</span> — координаты второй контрольной точки.
+            <br><br>
+            Использование квадратичных или кубических кривых Безье может быть спорным выходом, так как в отличие от приложений векторной графики типа Adobe Illustrator, мы не имеем полной видимой обратной связи с тем, что мы делаем. Этот факт делает довольно сложным процесс рисования сложных фигур. В следующем примере мы нарисуем совсем простую составную фигуру, но, если у вас есть время и ещё больше терпения, можно создать более сложные составные фигуры.
+            <br><br>
+            В этом примере нет ничего слишком тяжелого. В обоих случаях мы видим последовательность кривых, рисуя которые, в результате получим составную фигуру.
+        </p>
+        <img src="../images/Canvas_curves.png" alt="" style="padding: 20px 0 20px 20px; display: block; margin: 0 auto">
+    </div>
+    <div class="information">
+        <h3 id="bezieSquare">Квадратичные кривые Безье</h3>
+        <div class="content-container">
+            <p>В этом примере многократно используются квадратичные кривые Безье для рисования речевой выноски.</p>
+            <div class="Coding@(user == null ? " lock" : "" )" mode="javascript" id="Coding6">
+                <textarea name="code">
+ var canvas = document.getElementById('canvas');
+ var ctx = canvas.getContext('2d');
+ 
+ ctx.beginPath();
+ ctx.moveTo(75, 25);
+ ctx.quadraticCurveTo(25, 25, 25, 62.5);
+ ctx.quadraticCurveTo(25 ,100 ,50 ,100 );
+ ctx.quadraticCurveTo(50, 120,30, 125);
+ ctx.quadraticCurveTo(60, 120, 65, 100);
+ ctx.quadraticCurveTo(125, 100, 125, 62.5);
+ ctx.quadraticCurveTo(125, 25, 75, 25);
+ ctx.stroke();</textarea>
+                <div class="btnBox">
+                    <button>
+                        <span class="material-icons">
+                            filter_none
+                        </span>
+                    </button>
+                    <button>
+                        <span class="material-icons">
+                            replay
+                        </span>
+                    </button>
+                </div>
+                <p>Результат:</p>
+                <iframe scrolling="no" class="preview"></iframe>
+            </div>
+        </div>
+    </div>
+    <div class="information">
+        <h3 id="bezieCube">Кубические кривые Безье</h3>
+        <div class="content-container">
+            <p>В этом примере нарисовано сердце с использованием кубических кривых Безье.</p>
+            <div class="Coding@(user == null ? " lock" : "" )" mode="javascript" id="Coding7">
+                <textarea name="code">
+ var canvas = document.getElementById('canvas');
+ var ctx = canvas.getContext('2d');
+ 
+ ctx.beginPath();
+ ctx.moveTo(75, 40);
+ ctx.bezierCurveTo(75, 37, 70, 25,50, 25);
+ ctx.bezierCurveTo(20, 25, 20, 62.5, 20, 62.5);
+ ctx.bezierCurveTo(20, 80, 40, 102, 75, 120);
+ ctx.bezierCurveTo(110, 102, 130, 80, 130, 62.5);
+ ctx.bezierCurveTo(130, 62.5, 130, 25, 100, 25);
+ ctx.bezierCurveTo(85, 25, 75, 37, 75, 40);
+ ctx.fill();</textarea>
+                <div class="btnBox">
+                    <button>
+                        <span class="material-icons">
+                            filter_none
+                        </span>
+                    </button>
+                    <button>
+                        <span class="material-icons">
+                            replay
+                        </span>
+                    </button>
+                </div>
+                <p>Результат:</p>
+                <iframe scrolling="no" class="preview"></iframe>
+            </div>
+        </div>
+    </div>
+</article>
+<article>
+    <h1 id="path2D">Path2D объекты</h1>
+    <div class="content-container">
+        <p>
+            Как мы видели в последнем примере, есть серия путей и команд для рисования объектов на вашем холсте. Чтобы упростить код и повысить производительность, объект <span class="sapid">Path2D</span>, доступный в последних версиях браузеров, позволяет вам кэшировать или записывать эти команды рисования. Вы можете быстро запускать свои пути.<br>
+            Давайте посмотрим, как мы можем построить объект <span class="sapid">Path2D</span> :
+        </p>
+        <dl>
+            <dt><span class="sapid func">Path2D()</span></dt>
+            <dd>Конструктор <span class="sapid func">Path2D()</span> возвращает вновь созданный объект <span class="sapid">Path2D</span> необязательно с другим путем в качестве аргумента (создает копию) или необязательно со строкой, состоящей из данных пути SVG path .</dd>
+        </dl>
+        <div class="Coding noActive" id="Coding8" mode="javascript">
+            <textarea name="code">
+ new Path2D(); // пустой path объект
+ new Path2D(path); // копирование из другого path
+ new Path2D(d); // path из SVG</textarea>
+            <div class="btnBox">
+                <button>
+                    <span class="material-icons">
+                        filter_none
+                    </span>
+                </button>
+            </div>
+        </div>
+        <p>
+            Все методы path , такие как <span class="sapid">moveTo</span>, <span class="sapid">rect</span>, <span class="sapid">arc</span>, или <span class="sapid">quadraticCurveTo</span>, итп, которые мы уже знаем, доступны для объектов <span class="sapid">Path2D</span>
+            <br><br>
+            API <span class="sapid">Path2D</span> также добавляет способ комбинирования путей с использованием метода <span class="sapid">addPath</span>. Это может быть полезно, если вы хотите, например, создавать объекты из нескольких компонентов.
+        </p>
+        <dl>
+            <dt><span class="sapid func">Path2D.addPath(path [, transform])</span></dt>
+            <dd>Добавляет путь к текущему пути с необязательной матрицей преобразования.</dd>
+        </dl>
+    </div>
+    <div class="information">
+        <h3 id="path2DEx">Path2D пример</h3>
+        <div class="content-container">
+            <p>
+                В этом примере мы создаем прямоугольник и круг. Оба они сохраняются как объект <span class="sapid">Path2D</span>, поэтому они доступны для последующего использования. С новым API <span class="sapid">Path2D</span> несколько методов были обновлены, чтобы при необходимости принять объект <span class="sapid">Path2D</span> для использования вместо текущего пути. Здесь <span class="sapid">stroke</span> и <span class="sapid">fill</span> используются с аргументом пути, например, для рисования обоих объектов на холст.
+            </p>
+            <div class="Coding@(user == null ? " lock" : "" )" mode="javascript" id="Coding9">
+                <textarea name="code">
+ var canvas = document.getElementById('canvas');
+ var ctx = canvas.getContext('2d');
+ 
+ var rectangle = new Path2D();
+ rectangle.rect(25, 25, 50, 50);
+ 
+ var circle = new Path2D();
+ circle.moveTo(125, 50);
+ circle.arc(100, 50, 25, 0, 2 * Math.PI);
+ 
+ ctx.stroke(rectangle);
+ ctx.fill(circle);</textarea>
+                <div class="btnBox">
+                    <button>
+                        <span class="material-icons">
+                            filter_none
+                        </span>
+                    </button>
+                    <button>
+                        <span class="material-icons">
+                            replay
+                        </span>
+                    </button>
+                </div>
+                <p>Результат:</p>
+                <iframe scrolling="no" class="preview"></iframe>
+            </div>
+        </div>
+    </div>
+</article>

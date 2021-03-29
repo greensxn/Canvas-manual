@@ -1,0 +1,63 @@
+﻿@model PageModel
+
+<environment names="Development">
+    <link rel="stylesheet" href="~/lib/account.css" />
+</environment>
+
+<div class="account-container">
+    <h2 class="form-info">Создать аккаунт</h2>
+    <div class="form-container">
+        <form asp-controller="Account" asp-action="Create" method="post" enctype="multipart/form-data">
+            <fieldset>
+                <legend>Персональные данные:</legend>
+                <div>
+                    <input placeholder="Имя" asp-for="@Model.userCreateModel.FirstName" />
+                    <span asp-validation-for="@Model.userCreateModel.FirstName"></span>
+                </div>
+
+                <div>
+                    <input placeholder="Фамилия" asp-for="@Model.userCreateModel.LastName" />
+                    <span asp-validation-for="@Model.userCreateModel.LastName"></span>
+                </div>
+
+                <div>
+                    <input placeholder="Логин" asp-for="@Model.userCreateModel.Login" />
+                    <span asp-validation-for="@Model.userCreateModel.Login"></span>
+                </div>
+
+                <div>
+                    <input placeholder="Пароль" asp-for="@Model.userCreateModel.Password" />
+                    <span asp-validation-for="@Model.userCreateModel.Password"></span>
+                </div>
+
+                <div>
+                    <input placeholder="Подтвердите пароль" asp-for="@Model.userCreateModel.ConfirmPassword" />
+                    <span asp-validation-for="@Model.userCreateModel.ConfirmPassword"></span>
+                </div>
+
+                <div class="flexCenter">
+                    <p>Фото</p>
+                    <input type="file" asp-for="@Model.userCreateModel.Avatar" />
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Статус:</legend>
+                <div>
+                    <select asp-for="@Model.userCreateModel.Role.Name">
+                        <option value="@Model.db.Roles.Where(r => r.Role == RoleType.USER).FirstOrDefault().Name" selected>Пользователь</option>
+                        <option value="@Model.db.Roles.Where(r => r.Role == RoleType.EDITOR).FirstOrDefault().Name">Редактор</option>
+                        <option value="@Model.db.Roles.Where(r => r.Role == RoleType.ADMIN).FirstOrDefault().Name">Админ</option>
+                    </select>
+                </div>
+            </fieldset>
+
+            <input type="submit" class="btn green" value="Создать" />
+
+            <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        </form>
+    </div>
+    <a asp-controller="Account" asp-action="Users" class="center">Вернуться</a>
+</div>
+
+<partial name="_ValidationScriptsPartial" />

@@ -1,0 +1,97 @@
+﻿@model PageModel
+@{
+    SearchForm filter = new SearchForm();
+}
+
+<div class="account-container">
+    <h2 class="form-info">Список пользователей (@Model.Users.Count())</h2>
+    <form class="table seatch" asp-controller="Account" asp-action="Users" method="post">
+        <input type="text" placeholder="FIRSTNAME" asp-for="@filter.FNAME" />
+        <input type="text" placeholder="LASTNAME" asp-for="@filter.LNAME" />
+        <input type="submit" class="btn green" value="Найти" />
+    </form>
+    <a asp-action="Create" class="btn">Создать нового пользователя</a>
+    <div class="form-container table">
+        <form class="table" asp-controller="Account" asp-action="Users" method="post">
+            @if (Model.Users.Count() > 0) {
+                <div style="width:100%; overflow: auto;">
+                    <table class="table-users">
+                        <tr>
+                            <th>
+                                <label asp-for="user.Avatar"> </label>
+                            </th>
+                            <th>
+                                <label asp-for="user.FirstName"> </label>
+                            </th>
+                            <th>
+                                <label asp-for="user.LastName"> </label>
+                            </th>
+                            <th>
+                                <label asp-for="user.Login"> </label>
+                            </th>
+                            <th>
+                                <label asp-for="user.Password"> </label>
+                            </th>
+                            <th>
+                                <label asp-for="user.Role.Name"> </label>
+                            </th>
+                            <th>
+                                <label asp-for="user.isConfirmed"> </label>
+                            </th>
+                            <th>
+                                <label asp-for="user.Email"> </label>
+                            </th>
+                            <th>
+                                <label> Действие </label>
+                            </th>
+                        </tr>
+                        @foreach (var user in Model.Users) {
+                            <tr>
+                                <td>
+                                    @{
+                                        String AvatarLoc = "/lib/userDoc/user.png";
+                                        if (user != null) {
+                                            AvatarLoc = user.AvaLoc;
+                                        }
+                                    }
+                                    <img class="avatar s50" src="@AvatarLoc" />
+                                </td>
+                                <td>
+                                    @user.FirstName
+                                </td>
+                                <td>
+                                    @user.LastName
+                                </td>
+                                <td>
+                                    @user.Login
+                                </td>
+                                <td>
+                                    @user.Password
+                                </td>
+                                <td>
+                                    @user.Role.Name
+                                </td>
+                                <td>
+                                    @user.isConfirmed
+                                </td>
+                                <td>
+                                    @user.Email
+                                </td>
+                                <td style="overflow: auto;">
+                                    <div class="btnBox_users">
+                                        <a asp-action="Delete" asp-route-ID_user="@user.ID_user" class="btn red">Удалить</a>
+                                        <a asp-action="Edit" asp-route-ID_user="@user.ID_user" class="btn green">Редактировать</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            }
+            else {
+                <p>No Users</p>
+            }
+        </form>
+    </div>
+</div>
+

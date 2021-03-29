@@ -1,0 +1,82 @@
+﻿@model PageModel
+
+@{
+    String UserName = String.Empty;
+    UserRoleModel userRole = null;
+    UserModel user = Context.Session.GetObject<UserModel>("userModel");
+    String AvatarLoc = "user.png";
+    if (user != null) {
+        UserFile Avatar = Model.db.Files.Where(ph => ph.ID_user == user.ID_user).FirstOrDefault();
+        AvatarLoc = Avatar == null ? AvatarLoc : Avatar.Avatar;
+        userRole = user.Role;
+        UserName = $"{user.FirstName} {user.LastName} ({userRole.Name})";
+    }
+}
+
+<environment names="Development">
+    <link rel="stylesheet" href="~/lib/account.css" />
+</environment>
+
+<div class="profileGrid">
+
+    <div class="profileBlock userPhoto">
+        <section>
+            <h2>Фото</h2>
+            <img class="profileImg" src="/lib/userDoc/@AvatarLoc" alt="Avatar" />
+            <form enctype="multipart/form-data" id="profilePhotoForm" asp-action="ProfilePhoto" method="post">
+                <input onchange="changePhoto()" asp-for="@Model.userEditModel.Avatar" type="file">
+                <input type="hidden" asp-for="@Model.userEditModel.ID_user" value="@user.ID_user">
+                <script>
+                    function changePhoto() {
+                        $('#profilePhotoForm').submit();
+                    }
+                </script>
+            </form>
+        </section>
+    </div>
+
+    <div class="profileBlock userInfo">
+        <section class="flexCenter">
+            <h2>Персональные данные</h2>
+            <dl>
+                <dt>Имя</dt>
+                <dd>@user.FirstName</dd>
+                <dt>Фамилия</dt>
+                <dd>@user.LastName</dd>
+                <dt>Почта</dt>
+                <dd>@user.Email</dd>
+                <dt>Логин</dt>
+                <dd>@user.Login</dd>
+                <dt>Пароль</dt>
+                <dd>@user.Password</dd>
+                <dt>Статус</dt>
+                <dd>@user.Role.Name</dd>
+            </dl>
+            <a class="btn blue" asp-controller="Account" asp-action="LogOut">Выйти</a>
+        </section>
+    </div>
+
+    <div class="profileBlock resetUserInfo">
+        <section class="flexCenter">
+            <h2>Изменить информацию</h2>
+            <form enctype="multipart/form-data" asp-action="ProfileInfo" method="post">
+                <input type="hidden" asp-for="@Model.userEditModel.ID_user" value="@user.ID_user" />
+                <div class="profileInfo">
+                    <input placeholder="Имя" type="text" asp-for="@Model.userEditModel.FirstName" />
+                </div>
+                <div class="profileInfo">
+                    <input placeholder="Фамилия" type="text" asp-for="@Model.userEditModel.LastName" />
+                </div>
+                <div class="profileInfo">
+                    <input placeholder="Логин" type="text" asp-for="@Model.userEditModel.Login" />
+                </div>
+                <div class="profileInfo">
+                    <input placeholder="Пароль" type="text" asp-for="@Model.userEditModel.Password" />
+                </div>
+                <input type="submit" class="btn green" value="Сохранить" />
+            </form>
+            <a style="margin-top:20px;" class="btn red" asp-controller="Account" asp-action="Delete" asp-route-ID_user="@user.ID_user">Удалить аккаунт</a>
+        </section>
+    </div>
+
+</div>
